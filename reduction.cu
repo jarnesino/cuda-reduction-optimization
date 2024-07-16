@@ -1,7 +1,5 @@
 #include <iostream>
-#include <cuda_runtime.h>
-
-#include "reduce_implementations/1_interleaved_addressing_with_divergent_branching.cuh"
+#include "reduce_implementations/reduce_implementations.cuh"
 
 void initializeRandomTestingDataIn(int *data, int size) {
     for (int i = 0; i < size; ++i) {

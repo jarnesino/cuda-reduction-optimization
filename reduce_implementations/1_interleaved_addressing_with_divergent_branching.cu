@@ -1,4 +1,4 @@
-#include <cuda_runtime.h>
+#include "reduce_implementations.cuh"
 
 __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(int *inputData, int *outputData, unsigned int n) {
     extern __shared__ int sharedData[];
