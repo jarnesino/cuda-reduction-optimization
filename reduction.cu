@@ -5,6 +5,7 @@ int main() {// Create CUDA events for timing.
     cudaEventCreate(&startEvent);
     cudaEventCreate(&stopEvent);
 
+    // The reduction only works for up to 1024 elements (one block of threads), in order to avoid launching several kernels in different ways for each implementation.
     const int logDataSize = 10;
     const int dataSize = 1 << logDataSize;
     int* testingData = new int[dataSize];
