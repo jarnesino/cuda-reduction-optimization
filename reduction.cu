@@ -21,7 +21,7 @@ int main() {// Create CUDA events for timing.
 
 /* Auxiliary */
 
-void reduce(const int implementationNumber, reduce_implementation_function implementation, int* inputData, const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent) {
+void reduce(const int implementationNumber, reduceImplementationFunction implementation, int* inputData, const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent) {
     int outputData[dataSize];
     const int dataSizeInBytes = dataSize * sizeof(int);
 
