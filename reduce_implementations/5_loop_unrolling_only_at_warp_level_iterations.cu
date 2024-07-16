@@ -18,7 +18,6 @@ __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(int 
         }
         __syncthreads();
     }
-
     if (threadIndex > 32) warpReduce(sharedData, threadIndex);
 
     // Write this block's result in shared memory.
@@ -42,5 +41,6 @@ Completely unrolling the loop could be a good solution.
 We could know what the limitation for threads per block is.
 In this case, it's 1024 (2^10).
 We can use this to completely unroll the loop in the kernel.
+Given that we don't know the block size at compile time, we can use C++ template parameters, supported by CUDA in host and device functions.
 
 */
