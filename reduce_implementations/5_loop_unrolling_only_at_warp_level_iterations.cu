@@ -38,8 +38,9 @@ __device__ void warpReduce(volatile int* sharedData, int threadIndex) {
 
 Loops like this one produce instruction overhead.
 
-Unrolling the loop could be a good solution.
-We know all threads in a warp are SIMD-synchronous. Then, we could safely unroll the last warp, when (amountOfElementsToReduce <= 32).
-The if statement is also unnecessary, because it doesn't save work between threads in a warp.
+Completely unrolling the loop could be a good solution.
+We could know what the limitation for threads per block is.
+In this case, it's 1024 (2^10).
+We can use this to completely unroll the loop in the kernel.
 
 */
