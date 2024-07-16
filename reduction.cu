@@ -1,15 +1,27 @@
 #include <iostream>
 #include "reduce_implementations/reduce_implementations.cuh"
-
-void initializeRandomTestingDataIn(int *data, int size) {
-    for (int i = 0; i < size; ++i) {
-        data[i] = 1;
-    }
-}
+#include "reduction.h"
 
 int main() {
     const int logDataSize = 10;
     const int dataSize = 1 << logDataSize;
+
+    // Create CUDA events for timing.
+    cudaEvent_t startEvent, stopEvent;
+    cudaEventCreate(&startEvent);
+    cudaEventCreate(&stopEvent);
+
+    reduce(dataSize, startEvent, stopEvent);
+
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(stopEvent);
+
+    return 0;
+}
+
+/* Auxiliary */
+
+void reduce(const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent) {
     const int dataSizeInBytes = dataSize * sizeof(int);
 
     int inputData[dataSize];
@@ -26,11 +38,6 @@ int main() {
     int threadsPerBlock = 1024;
     int blocks = (dataSize + threadsPerBlock - 1) / threadsPerBlock;
     size_t sharedMemSize = threadsPerBlock * sizeof(int);
-
-    // Create CUDA events for timing.
-    cudaEvent_t startEvent, stopEvent;
-    cudaEventCreate(&startEvent);
-    cudaEventCreate(&stopEvent);
 
     // Record the start event.
     cudaEventRecord(startEvent, 0);
@@ -58,11 +65,12 @@ int main() {
 
     std::cout << "*****************************************************" << std::endl;
 
-    cudaEventDestroy(startEvent);
-    cudaEventDestroy(stopEvent);
-
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
+}
 
-    return 0;
+void initializeRandomTestingDataIn(int *data, int size) {
+    for (int index = 0; index < size; ++index) {
+        data[index] = 1;
+    }
 }
