@@ -26,13 +26,11 @@ void reduce(const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent) {
 
     int inputData[dataSize];
     int outputData[dataSize];
-
     initializeRandomTestingDataIn(inputData, dataSize);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
     cudaMalloc((void **)&deviceOutputData, dataSizeInBytes);
-
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
 
     int threadsPerBlock = 1024;
@@ -45,24 +43,18 @@ void reduce(const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent) {
     // Launch kernel.
     reduce_using_2_interleaved_addressing_with_bank_conflicts<<<blocks, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
 
-    // Record the stop event.
+    // Record the stop event and wait for it to complete.
     cudaEventRecord(stopEvent, 0);
-
-    // Wait for the stop event to complete.
     cudaEventSynchronize(stopEvent);
-
-    // Calculate the elapsed time in milliseconds.
-    float elapsedTime;
-    cudaEventElapsedTime(&elapsedTime, startEvent, stopEvent);
-
-    std::cout << "*****************************************************" << std::endl;
-
-    std::cout << "Elapsed time: " << elapsedTime << " ms" << std::endl;
 
     cudaMemcpy(outputData, deviceOutputData, dataSizeInBytes, cudaMemcpyDeviceToHost);
 
-    std::cout << "Reduction result: " << outputData[0] << std::endl;
+    float elapsedTimeInMilliseconds;
+    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
+    std::cout << "*****************************************************" << std::endl;
+    std::cout << "Elapsed time: " << elapsedTimeInMilliseconds << " ms" << std::endl;
+    std::cout << "Reduction result: " << outputData[0] << std::endl;
     std::cout << "*****************************************************" << std::endl;
 
     cudaFree(deviceInputData);
