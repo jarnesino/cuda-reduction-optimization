@@ -1,6 +1,16 @@
 #include "reduction.cuh"
 
-int main() {// Create CUDA events for timing.
+/*
+
+Playing around with CUDA optimizations.
+https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
+
+TODO: Add time complexity explanations.
+
+*/
+
+int main() {
+    // Create CUDA events for timing.
     cudaEvent_t startEvent, stopEvent;
     cudaEventCreate(&startEvent);
     cudaEventCreate(&stopEvent);
