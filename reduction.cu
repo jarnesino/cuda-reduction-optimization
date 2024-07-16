@@ -36,7 +36,7 @@ int main() {
     cudaEventRecord(startEvent, 0);
 
     // Launch kernel.
-    reduce_using_1_interleaved_addressing_with_divergent_branching<<<blocks, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
+    reduce_using_2_interleaved_addressing_with_bank_conflicts<<<blocks, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
 
     // Record the stop event.
     cudaEventRecord(stopEvent, 0);
