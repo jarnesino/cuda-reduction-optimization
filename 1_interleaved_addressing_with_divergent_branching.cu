@@ -1,22 +1,22 @@
 #include <cuda_runtime.h>
 
-__global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(int *input_data, int *output_data, unsigned int n) {
-    extern __shared__ int shared_data[];
+__global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(int *inputData, int *outputData, unsigned int n) {
+    extern __shared__ int sharedData[];
 
-    // each thread loads one element from global to shared mem
-    unsigned int thread_block_index = threadIdx.x;
-    unsigned int thread_index = blockIdx.x * blockDim.x + threadIdx.x;
-    shared_data[thread_block_index] = input_data[thread_index];
+    // Load one element from global to shared memory in each thread.
+    unsigned int threadBlockIndex = threadIdx.x;
+    unsigned int threadIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    sharedData[threadBlockIndex] = inputData[threadIndex];
     __syncthreads();
 
-    // do reduction in shared mem
-    for(unsigned int amount_of_elements_reduced = 1; amount_of_elements_reduced < blockDim.x; amount_of_elements_reduced *= 2) {
-        if (thread_block_index % (2 * amount_of_elements_reduced) == 0) {
-            shared_data[thread_block_index] += shared_data[thread_block_index + amount_of_elements_reduced];
+    // Do reduction in shared memory.
+    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockDim.x; amountOfElementsReduced *= 2) {
+        if (threadBlockIndex % (2 * amountOfElementsReduced) == 0) {
+            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsReduced];
         }
         __syncthreads();
     }
 
-    // write result for this block to global mem
-    if (thread_block_index == 0) output_data[blockIdx.x] = shared_data[0];
+    // Write this block's result in shared memory.
+    if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
 }
