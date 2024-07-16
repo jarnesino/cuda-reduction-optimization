@@ -1,10 +1,16 @@
 CC = nvcc
-TARGET = reduction
+REDUCTION_TARGET = reduction
 
-all: $(TARGET)
+.PHONY: build run clean
 
-$(TARGET): reduction.cu
-	$(CC) reduction.cu -o $(TARGET)
+build: $(REDUCTION_TARGET)
+
+$(REDUCTION_TARGET): reduction.cu
+	$(CC) reduction.cu -o $(REDUCTION_TARGET)
+
+run: build
+	./$(REDUCTION_TARGET)
+	$(MAKE) clean
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(REDUCTION_TARGET)
