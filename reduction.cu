@@ -10,7 +10,8 @@ void initializeRandomTestingData(int *data, int size) {
 }
 
 int main() {
-    const int size = 1024;
+    const int log_size = 19;
+    const int size = 1 << log_size;
     const int bytes = size * sizeof(int);
 
     int h_idata[size];
