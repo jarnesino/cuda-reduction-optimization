@@ -38,7 +38,8 @@ void reduce(const int implementationNumber, reduceImplementationFunction impleme
     cudaEventRecord(startEvent, 0);
 
     // Launch kernel.
-    implementation<<<blocks, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
+    const int oneBlock = 1;
+    implementation<<<oneBlock, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
 
     // Record the stop event and wait for it to complete.
     cudaEventRecord(stopEvent, 0);
