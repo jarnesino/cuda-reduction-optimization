@@ -22,7 +22,7 @@ __global__ void reduce(int *g_idata, int *g_odata, unsigned int n) {
     if (tid == 0) g_odata[blockIdx.x] = sdata[0];
 }
 
-void initializeData(int *data, int size) {
+void initializeRandomTestingData(int *data, int size) {
     for (int i = 0; i < size; ++i) {
         data[i] = rand() % 100; // Random data for testing
     }
@@ -35,7 +35,7 @@ int main() {
     int h_idata[size];
     int h_odata[size];
 
-    initializeData(h_idata, size);
+    initializeRandomTestingData(h_idata, size);
 
     int *d_idata, *d_odata;
     cudaMalloc((void **)&d_idata, bytes);
@@ -55,6 +55,7 @@ int main() {
     // Record the start event
     cudaEventRecord(start, 0);
 
+    // Launch kernel
     reduce<<<blocks, threads, sharedMemSize>>>(d_idata, d_odata, size);
 
     // Record the stop event
