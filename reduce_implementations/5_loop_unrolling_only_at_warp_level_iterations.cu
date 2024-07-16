@@ -2,7 +2,7 @@
 
 __device__ void warpReduce(volatile int* sharedData, int threadIndex);
 
-__global__ void reduce_using_5_unroll_loop_only_at_warp_level_iterations(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
