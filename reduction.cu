@@ -67,11 +67,15 @@ int main() {
     float elapsedTime;
     cudaEventElapsedTime(&elapsedTime, start, stop);
 
+    std::cout << "*****************************************************" << std::endl;
+
     std::cout << "Elapsed time: " << elapsedTime << " ms" << std::endl;
 
     cudaMemcpy(h_odata, d_odata, bytes, cudaMemcpyDeviceToHost);
 
     std::cout << "Reduction result: " << h_odata[0] << std::endl;
+
+    std::cout << "*****************************************************" << std::endl;
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
