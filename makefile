@@ -1,12 +1,16 @@
 CC = nvcc
 REDUCTION_TARGET = reduction
 
+REDUCE_IMPLEMENTATIONS_DIRECTORY = reduce_implementations
+REDUCE_IMPLEMENTATIONS = $(wildcard $(REDUCE_IMPLEMENTATIONS_DIRECTORY)/*.cu)
+
+
 .PHONY: build run clean
 
 build: $(REDUCTION_TARGET)
 
-$(REDUCTION_TARGET): reduction.cu reduce_implementations/1_interleaved_addressing_with_divergent_branching.cu
-	$(CC) reduction.cu reduce_implementations/1_interleaved_addressing_with_divergent_branching.cu -o $(REDUCTION_TARGET)
+$(REDUCTION_TARGET): reduction.cu $(REDUCE_IMPLEMENTATIONS)
+	$(CC) reduction.cu $(REDUCE_IMPLEMENTATIONS) -o $(REDUCTION_TARGET)
 
 run: build
 	./$(REDUCTION_TARGET)
