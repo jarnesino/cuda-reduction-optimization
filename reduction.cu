@@ -52,6 +52,7 @@ void reduce(const int implementationNumber, reduce_implementation_function imple
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
     std::cout << "*****************************************************" << std::endl;
+    std::cout << "Implementation number: " << implementationNumber << std::endl;
     std::cout << "Elapsed time: " << elapsedTimeInMilliseconds << " ms" << std::endl;
     std::cout << "Reduction result: " << outputData[0] << std::endl;
     std::cout << "*****************************************************" << std::endl;
