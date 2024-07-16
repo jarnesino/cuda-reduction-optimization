@@ -3,68 +3,68 @@
 
 #include "1_interleaved_addressing_with_divergent_branching.cuh"
 
-void initializeRandomTestingData(int *data, int size) {
+void initializeRandomTestingDataIn(int *data, int size) {
     for (int i = 0; i < size; ++i) {
-        data[i] = rand() % 100;
+        data[i] = 1;
     }
 }
 
 int main() {
-    const int log_size = 19;
-    const int size = 1 << log_size;
-    const int bytes = size * sizeof(int);
+    const int logDataSize = 10;
+    const int dataSize = 1 << logDataSize;
+    const int dataSizeInBytes = dataSize * sizeof(int);
 
-    int h_idata[size];
-    int h_odata[size];
+    int inputData[dataSize];
+    int outputData[dataSize];
 
-    initializeRandomTestingData(h_idata, size);
+    initializeRandomTestingDataIn(inputData, dataSize);
 
-    int *d_idata, *d_odata;
-    cudaMalloc((void **)&d_idata, bytes);
-    cudaMalloc((void **)&d_odata, bytes);
+    int *deviceInputData, *deviceOutputData;
+    cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
+    cudaMalloc((void **)&deviceOutputData, dataSizeInBytes);
 
-    cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
 
-    int threads = 256;
-    int blocks = (size + threads - 1) / threads;
-    size_t sharedMemSize = threads * sizeof(int);
+    int threadsPerBlock = 1024;
+    int blocks = (dataSize + threadsPerBlock - 1) / threadsPerBlock;
+    size_t sharedMemSize = threadsPerBlock * sizeof(int);
 
-    // Create CUDA events for timing
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
+    // Create CUDA events for timing.
+    cudaEvent_t startEvent, stopEvent;
+    cudaEventCreate(&startEvent);
+    cudaEventCreate(&stopEvent);
 
-    // Record the start event
-    cudaEventRecord(start, 0);
+    // Record the start event.
+    cudaEventRecord(startEvent, 0);
 
-    // Launch kernel
-    reduce_using_1_interleaved_addressing_with_divergent_branching<<<blocks, threads, sharedMemSize>>>(d_idata, d_odata, size);
+    // Launch kernel.
+    reduce_using_1_interleaved_addressing_with_divergent_branching<<<blocks, threadsPerBlock, sharedMemSize>>>(deviceInputData, deviceOutputData, dataSize);
 
-    // Record the stop event
-    cudaEventRecord(stop, 0);
+    // Record the stop event.
+    cudaEventRecord(stopEvent, 0);
 
-    // Wait for the stop event to complete
-    cudaEventSynchronize(stop);
+    // Wait for the stop event to complete.
+    cudaEventSynchronize(stopEvent);
 
-    // Calculate the elapsed time in milliseconds
+    // Calculate the elapsed time in milliseconds.
     float elapsedTime;
-    cudaEventElapsedTime(&elapsedTime, start, stop);
+    cudaEventElapsedTime(&elapsedTime, startEvent, stopEvent);
 
     std::cout << "*****************************************************" << std::endl;
 
     std::cout << "Elapsed time: " << elapsedTime << " ms" << std::endl;
 
-    cudaMemcpy(h_odata, d_odata, bytes, cudaMemcpyDeviceToHost);
+    cudaMemcpy(outputData, deviceOutputData, dataSizeInBytes, cudaMemcpyDeviceToHost);
 
-    std::cout << "Reduction result: " << h_odata[0] << std::endl;
+    std::cout << "Reduction result: " << outputData[0] << std::endl;
 
     std::cout << "*****************************************************" << std::endl;
 
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(stopEvent);
 
-    cudaFree(d_idata);
-    cudaFree(d_odata);
+    cudaFree(deviceInputData);
+    cudaFree(deviceOutputData);
 
     return 0;
 }
