@@ -15,6 +15,7 @@ int main() {// Create CUDA events for timing.
     reduce(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, testingData, dataSize, startEvent, stopEvent);
     reduce(3, reduce_using_3_sequential_addressing_with_idle_threads, testingData, dataSize, startEvent, stopEvent);
     reduce(4, reduce_using_4_first_add_during_load_with_loop_overhead, testingData, dataSize, startEvent, stopEvent);
+    reduce(5, reduce_using_5_unroll_loop_only_at_warp_level_iterations, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
