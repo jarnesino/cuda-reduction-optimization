@@ -13,6 +13,7 @@ int main() {// Create CUDA events for timing.
 
     reduce(1, reduce_using_1_interleaved_addressing_with_divergent_branching, testingData, dataSize, startEvent, stopEvent);
     reduce(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, testingData, dataSize, startEvent, stopEvent);
+    reduce(3, reduce_using_3_sequential_addressing_with_idle_threads, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
@@ -32,7 +33,6 @@ void reduce(const int implementationNumber, reduceImplementationFunction impleme
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
 
     int threadsPerBlock = 1024;
-    int blocks = (dataSize + threadsPerBlock - 1) / threadsPerBlock;
     size_t sharedMemSize = threadsPerBlock * sizeof(int);
 
     // Record the start event.
@@ -63,6 +63,6 @@ void reduce(const int implementationNumber, reduceImplementationFunction impleme
 
 void initializeTestingDataIn(int *data, int size) {
     for (int index = 0; index < size; ++index) {
-        data[index] = index;
+        data[index] = 1;
     }
 }
