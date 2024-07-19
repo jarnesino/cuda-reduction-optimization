@@ -11,7 +11,7 @@ __global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(int *i
 
     // Do reduction in shared memory.
     for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockDim.x; amountOfElementsReduced *= 2) {
-        int index = 2 * amountOfElementsReduced * threadIndex;  // This indexing may produce memory bank conflicts.
+        int index = 2 * amountOfElementsReduced * threadBlockIndex;  // This indexing may produce memory bank conflicts.
         if (index < blockDim.x) {
             sharedData[index] += sharedData[index + amountOfElementsReduced];
         }

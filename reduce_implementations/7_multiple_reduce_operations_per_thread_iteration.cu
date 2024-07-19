@@ -3,12 +3,17 @@
 
 template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadIndex);
 
-__global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];
 
     unsigned int threadBlockIndex = threadIdx.x;
     unsigned int threadIndex = blockIdx.x * blockDim.x * 2 + threadIdx.x;
-    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + blockDim.x];
+    unsigned int gridSize = BLOCK_SIZE * 2 * gridDim.x;
+    sharedData[threadBlockIndex] = 0;
+    while (threadIndex < dataSize) {
+        sharedData[threadBlockIndex] += inputData[threadIndex] + inputData[threadIndex + BLOCK_SIZE];
+        threadIndex += gridSize;
+    }
     __syncthreads();
 
     // Do reduction in shared memory.
@@ -35,11 +40,11 @@ __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(int *i
 }
 
 template <unsigned int blockSize>
-__device__ void warpReduce(volatile int* sharedData, int threadBlockIndex) {
-    if (blockSize >= 64) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 32];
-    if (blockSize >= 32) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 16];
-    if (blockSize >= 16) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 8];
-    if (blockSize >= 8) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 4];
-    if (blockSize >= 4) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
-    if (blockSize >= 2) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
+__device__ void warpReduce(volatile int* sharedData, int threadIndex) {
+    if (blockSize >= 64) sharedData[threadIndex] += sharedData[threadIndex + 32];
+    if (blockSize >= 32) sharedData[threadIndex] += sharedData[threadIndex + 16];
+    if (blockSize >= 16) sharedData[threadIndex] += sharedData[threadIndex + 8];
+    if (blockSize >= 8) sharedData[threadIndex] += sharedData[threadIndex + 4];
+    if (blockSize >= 4) sharedData[threadIndex] += sharedData[threadIndex + 2];
+    if (blockSize >= 2) sharedData[threadIndex] += sharedData[threadIndex + 1];
 }

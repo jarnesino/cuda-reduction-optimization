@@ -27,6 +27,7 @@ int main() {
     reduce(4, reduce_using_4_first_add_during_load_with_loop_overhead, testingData, dataSize, startEvent, stopEvent);
     reduce(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, testingData, dataSize, startEvent, stopEvent);
     reduce(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, testingData, dataSize, startEvent, stopEvent);
+    reduce(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
@@ -64,14 +65,14 @@ void reduce(const int implementationNumber, reduceImplementationFunction impleme
     float elapsedTimeInMilliseconds;
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
-    std::cout << "*****************************************************" << std::endl;
-    std::cout << "Implementation number: " << implementationNumber << std::endl;
-    std::cout << "Elapsed time: " << elapsedTimeInMilliseconds << " ms" << std::endl;
-    std::cout << "Reduction result: " << outputData[0] << std::endl;
-    std::cout << "*****************************************************" << std::endl;
+    printImplementationData(implementationNumber, elapsedTimeInMilliseconds, outputData[0]);
 
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
+}
+
+void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result) {
+    std::cout << "*** Implementation number: " << implementationNumber << "\t Elapsed time: " << elapsedTimeInMilliseconds << "\t" << "Reduction result: " << result << std::endl;
 }
 
 void initializeTestingDataIn(int *data, int size) {

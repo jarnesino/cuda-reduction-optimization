@@ -4,7 +4,10 @@
 #include <iostream>
 #include "reduce_implementations/reduce_implementations.cuh"
 
-void reduce(const int implementationNumber, reduceImplementationFunction implementation, int* inputData, const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent);
+const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
+
+void reduce(const int implementationNumber, reduceImplementationFunction implementation, int *inputData, const int dataSize, cudaEvent_t startEvent, cudaEvent_t stopEvent);
+void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result);
 void initializeTestingDataIn(int *data, int size);
 
 #endif // REDUCTION
