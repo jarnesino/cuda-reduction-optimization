@@ -46,21 +46,21 @@ void reduce(
     cudaEvent_t stopEvent
 ) {
     const int threadsPerBlock = BLOCK_SIZE;
-    int amountOfBlocks = (dataSize + threadsPerBlock - 1) / threadsPerBlock;
-    const size_t sharedMemSize = threadsPerBlock * sizeof(int);
     const size_t dataSizeInBytes = dataSize * sizeof(int);
+    int amountOfBlocks = (dataSize + threadsPerBlock * blockSizedChunksReducedPerBlock - 1) / (threadsPerBlock * blockSizedChunksReducedPerBlock);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
-    cudaMalloc((void **)&deviceOutputData, amountOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent kernel launches.
+    cudaMalloc((void **)&deviceOutputData, amountOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
-
-    // Record the start event.
-    cudaEventRecord(startEvent, 0);
 
     int remainingElements = dataSize;
     int *inputPointer = deviceInputData;
     int *outputPointer = deviceOutputData;
+    const size_t sharedMemSize = threadsPerBlock * sizeof(int);
+
+    // Record the start event.
+    cudaEventRecord(startEvent, 0);
 
     // Launch kernel for each block.
     while (remainingElements > 1) {
