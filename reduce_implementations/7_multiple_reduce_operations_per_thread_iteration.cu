@@ -39,7 +39,7 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(i
     if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
 }
 
-template <unsigned int blockSize>
+template <unsigned int blockSize>  // Needed because this is a device function which can't access the BLOCK_SIZE constant.
 __device__ void warpReduce(volatile int* sharedData, int threadIndex) {
     if (blockSize >= 64) sharedData[threadIndex] += sharedData[threadIndex + 32];
     if (blockSize >= 32) sharedData[threadIndex] += sharedData[threadIndex + 16];
