@@ -5,6 +5,7 @@
 
 typedef void (*reduceImplementationFunction)(int *inputData, int *outputData, unsigned int dataSize);
 
+__global__ void reduce_using_0_interleaved_addressing_with_local_memory(int *inputData, int *outputData, unsigned int dataSize);
 __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(int *inputData, int *outputData, unsigned int dataSize);
 __global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(int *inputData, int *outputData, unsigned int dataSize);
 __global__ void reduce_using_3_sequential_addressing_with_idle_threads(int *inputData, int *outputData, unsigned int dataSize);
