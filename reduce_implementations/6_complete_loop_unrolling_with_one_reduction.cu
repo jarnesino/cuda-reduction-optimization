@@ -1,7 +1,7 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadIndex);
+template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex);
 
 __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];

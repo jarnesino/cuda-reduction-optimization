@@ -1,7 +1,7 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadIndex);
+template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex);
 
 __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];
@@ -40,11 +40,11 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(i
 }
 
 template <unsigned int blockSize>  // Needed because this is a device function which can't access the BLOCK_SIZE constant.
-__device__ void warpReduce(volatile int* sharedData, int threadIndex) {
-    if (blockSize >= 64) sharedData[threadIndex] += sharedData[threadIndex + 32];
-    if (blockSize >= 32) sharedData[threadIndex] += sharedData[threadIndex + 16];
-    if (blockSize >= 16) sharedData[threadIndex] += sharedData[threadIndex + 8];
-    if (blockSize >= 8) sharedData[threadIndex] += sharedData[threadIndex + 4];
-    if (blockSize >= 4) sharedData[threadIndex] += sharedData[threadIndex + 2];
-    if (blockSize >= 2) sharedData[threadIndex] += sharedData[threadIndex + 1];
+__device__ void warpReduce(volatile int* sharedData, int threadBlockIndex) {
+    if (blockSize >= 64) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 32];
+    if (blockSize >= 32) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 16];
+    if (blockSize >= 16) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 8];
+    if (blockSize >= 8) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 4];
+    if (blockSize >= 4) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
+    if (blockSize >= 2) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
 }
