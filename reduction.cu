@@ -47,7 +47,7 @@ void reduce(
 ) {
     const int threadsPerBlock = BLOCK_SIZE;
     const size_t dataSizeInBytes = dataSize * sizeof(int);
-    int amountOfBlocks = (dataSize + threadsPerBlock * blockSizedChunksReducedPerBlock - 1) / (threadsPerBlock * blockSizedChunksReducedPerBlock);
+    int amountOfBlocks = amountOfBlocksForReduction(dataSize, threadsPerBlock, blockSizedChunksReducedPerBlock);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
@@ -64,7 +64,7 @@ void reduce(
 
     // Launch kernel for each block.
     while (remainingElements > 1) {
-        amountOfBlocks = (remainingElements + threadsPerBlock * blockSizedChunksReducedPerBlock - 1) / (threadsPerBlock * blockSizedChunksReducedPerBlock);
+        amountOfBlocks = amountOfBlocksForReduction(remainingElements, threadsPerBlock, blockSizedChunksReducedPerBlock);
         implementation<<<amountOfBlocks, threadsPerBlock, sharedMemSize>>>(inputPointer, outputPointer, remainingElements);
         cudaDeviceSynchronize();
 
@@ -87,6 +87,10 @@ void reduce(
 
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
+}
+
+int amountOfBlocksForReduction(const int dataSize, const int threadsPerBlock, const int blockSizedChunksReducedPerBlock) {
+    return (dataSize + threadsPerBlock * blockSizedChunksReducedPerBlock - 1) / (threadsPerBlock * blockSizedChunksReducedPerBlock);
 }
 
 void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result) {
