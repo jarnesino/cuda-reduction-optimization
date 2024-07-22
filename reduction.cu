@@ -15,7 +15,7 @@ int main() {
     cudaEventCreate(&startEvent);
     cudaEventCreate(&stopEvent);
 
-    const int logDataSize = 30;
+    const int logDataSize = 30;  // At least one element in the testing data
     const int dataSize = 1 << logDataSize;
     int* testingData = new int[dataSize];
     initializeTestingDataIn(testingData, dataSize);
