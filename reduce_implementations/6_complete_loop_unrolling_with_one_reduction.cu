@@ -8,9 +8,8 @@ __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(int *i
 
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int blockSize = blockDim.x;
-    unsigned int threadIndex = blockIndex * blockSize * 2 + threadBlockIndex;
-    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + blockSize];
+    unsigned int threadIndex = blockIndex * BLOCK_SIZE * 2 + threadBlockIndex;
+    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + BLOCK_SIZE];
     __syncthreads();
 
     // Do reduction in shared memory.

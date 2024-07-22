@@ -8,7 +8,7 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(i
 
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIndex * blockDim.x * 2 + threadBlockIndex;
+    unsigned int threadIndex = blockIndex * BLOCK_SIZE * 2 + threadBlockIndex;
     unsigned int gridSize = BLOCK_SIZE * 2 * gridDim.x;
     sharedData[threadBlockIndex] = 0;
     while (threadIndex < dataSize) {
