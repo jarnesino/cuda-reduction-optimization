@@ -6,8 +6,9 @@ template <unsigned int blockSize> __device__ void warpReduce(volatile int* share
 __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];
 
+    unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIdx.x * blockDim.x * 2 + threadIdx.x;
+    unsigned int threadIndex = blockIndex * blockDim.x * 2 + threadBlockIndex;
     unsigned int gridSize = BLOCK_SIZE * 2 * gridDim.x;
     sharedData[threadBlockIndex] = 0;
     while (threadIndex < dataSize) {
@@ -36,7 +37,7 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(i
     if (threadBlockIndex < 32) warpReduce<BLOCK_SIZE>(sharedData, threadBlockIndex);
 
     // Write this block's result in shared memory.
-    if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
+    if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
 template <unsigned int blockSize>  // Needed because this is a device function which can't access the BLOCK_SIZE constant.

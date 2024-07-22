@@ -4,13 +4,15 @@ __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(i
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
+    unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int blockSize = blockDim.x;
+    unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
     sharedData[threadBlockIndex] = inputData[threadIndex];
     __syncthreads();
 
     // Do reduction in shared memory.
-    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockDim.x; amountOfElementsReduced *= 2) {
+    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced *= 2) {
         if (threadBlockIndex % (2 * amountOfElementsReduced) == 0) {  // This instruction produces divergent branching.
             sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsReduced];
         }
@@ -18,7 +20,7 @@ __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(i
     }
 
     // Write this block's result in shared memory.
-    if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
+    if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
 /*

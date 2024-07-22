@@ -4,13 +4,15 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(int *inpu
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
+    unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int blockSize = blockDim.x;
+    unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
     sharedData[threadBlockIndex] = inputData[threadIndex];
     __syncthreads();
 
     // Do reduction in shared memory.
-    for (unsigned int amountOfElementsToReduce = blockDim.x / 2; amountOfElementsToReduce > 0; amountOfElementsToReduce >>= 1) {
+    for (unsigned int amountOfElementsToReduce = blockSize / 2; amountOfElementsToReduce > 0; amountOfElementsToReduce >>= 1) {
         if (threadBlockIndex < amountOfElementsToReduce) {  // This if statement makes many threads idle threads in each iteration.
             sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsToReduce];
         }
@@ -18,7 +20,7 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(int *inpu
     }
 
     // Write this block's result in shared memory.
-    if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
+    if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
 /*

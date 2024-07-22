@@ -4,22 +4,24 @@ __global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(int *i
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
+    unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned int blockSize = blockDim.x;
+    unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
     sharedData[threadBlockIndex] = inputData[threadIndex];
     __syncthreads();
 
     // Do reduction in shared memory.
-    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockDim.x; amountOfElementsReduced *= 2) {
+    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced *= 2) {
         int index = 2 * amountOfElementsReduced * threadBlockIndex;  // This indexing may produce memory bank conflicts.
-        if (index < blockDim.x) {
+        if (index < blockSize) {
             sharedData[index] += sharedData[index + amountOfElementsReduced];
         }
         __syncthreads();
     }
 
     // Write this block's result in shared memory.
-    if (threadBlockIndex == 0) outputData[blockIdx.x] = sharedData[0];
+    if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
 /*
