@@ -44,3 +44,11 @@ __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex) {
     if (blockSize >= 4) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
     if (blockSize >= 2) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
 }
+
+/*
+
+Many kernels can be launched, but a GPU has a limited amount of blocks in a grid.
+When that amount (e.g. 16) is reached, the rest of the kernel executions are serialized.
+Knowing this, we can use it to our advantage and reduce the data to a grid-sized array before executing the grid-wide reduction.
+
+*/
