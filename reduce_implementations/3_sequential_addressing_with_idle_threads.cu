@@ -10,7 +10,7 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(int *inpu
     __syncthreads();
 
     // Do reduction in shared memory.
-    for (unsigned int amountOfElementsToReduce= blockDim.x / 2; amountOfElementsToReduce > 0; amountOfElementsToReduce >>= 1) {
+    for (unsigned int amountOfElementsToReduce = blockDim.x / 2; amountOfElementsToReduce > 0; amountOfElementsToReduce >>= 1) {
         if (threadBlockIndex < amountOfElementsToReduce) {  // This if statement makes many threads idle threads in each iteration.
             sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsToReduce];
         }

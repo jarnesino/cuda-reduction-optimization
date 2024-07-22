@@ -10,8 +10,8 @@ __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(int *inp
 
     // Do reduction in shared memory.
     for (unsigned int amountOfElementsToReduce = blockDim.x / 2; amountOfElementsToReduce > 0; amountOfElementsToReduce >>= 1) {  // This loop produces instruction overhead.
-        if (threadIndex < amountOfElementsToReduce) {
-            sharedData[threadIndex] += sharedData[threadIndex + amountOfElementsToReduce];
+        if (threadBlockIndex < amountOfElementsToReduce) {
+            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsToReduce];
         }
         __syncthreads();
     }
