@@ -20,15 +20,15 @@ int main() {
     int* testingData = new int[dataSize];
     initializeTestingDataIn(testingData, dataSize);
 
-    reduce(0, reduce_using_0_interleaved_addressing_with_local_memory, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
-    reduce(1, reduce_using_1_interleaved_addressing_with_divergent_branching, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
-    reduce(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
-    reduce(3, reduce_using_3_sequential_addressing_with_idle_threads, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
-    reduce(4, reduce_using_4_first_add_during_load_with_loop_overhead, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
-    reduce(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
-    reduce(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
-    reduce(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, amountOfBlocksForReductionWithMultipleSteps, testingData, dataSize, startEvent, stopEvent);
-    reduce(8, reduce_using_8_operations_for_consecutive_memory_addressing, amountOfBlocksForReductionWithConsecutiveMemoryAdressing, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(0, reduce_using_0_interleaved_addressing_with_local_memory, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(1, reduce_using_1_interleaved_addressing_with_divergent_branching, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(3, reduce_using_3_sequential_addressing_with_idle_threads, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(4, reduce_using_4_first_add_during_load_with_loop_overhead, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, amountOfBlocksForReductionWithMultipleSteps, testingData, dataSize, startEvent, stopEvent);
+    reduceAndMeasureTime(8, reduce_using_8_operations_for_consecutive_memory_addressing, amountOfBlocksForReductionWithConsecutiveMemoryAdressing, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
@@ -38,7 +38,7 @@ int main() {
 
 /* Auxiliary */
 
-void reduce(
+void reduceAndMeasureTime(
     const int implementationNumber,
     reduceImplementationFunction implementation,
     amountOfBlocksFunction amountOfBlocksFor,
