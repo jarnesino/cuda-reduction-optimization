@@ -28,6 +28,7 @@ int main() {
     reduce(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
     reduce(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
     reduce(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, amountOfBlocksForReductionWithMultipleSteps, testingData, dataSize, startEvent, stopEvent);
+    reduce(8, reduce_using_8_operations_for_consecutive_memory_addressing, amountOfBlocksForReductionWithConsecutiveMemoryAdressing, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
@@ -67,6 +68,7 @@ void reduce(
         amountOfBlocks = amountOfBlocksFor(remainingElements);
         implementation<<<amountOfBlocks, BLOCK_SIZE, sharedMemSize>>>(inputPointer, outputPointer, remainingElements);
         cudaDeviceSynchronize();
+        checkForCUDAErrors();
 
         remainingElements = amountOfBlocks;
         inputPointer = outputPointer;
@@ -89,6 +91,14 @@ void reduce(
     cudaFree(deviceOutputData);
 }
 
+void checkForCUDAErrors() {
+    cudaError_t result = cudaGetLastError();
+    if (result != cudaSuccess) {
+        std::cerr << "CUDA error: ";
+        std::cerr << cudaGetErrorString(result) << std::endl;
+        exit(EXIT_FAILURE);
+    }
+}
 
 int amountOfBlocksForStandardReduction(const int dataSize) {
     return (dataSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
@@ -97,12 +107,19 @@ int amountOfBlocksForStandardReduction(const int dataSize) {
 
 int amountOfBlocksForReductionWithExtraStep(const int dataSize) {
     const int blockSizedChunksReducedPerBlock = 2;
-    return (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) / (BLOCK_SIZE * 2);
+    return (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) / (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
 }
 
 
 int amountOfBlocksForReductionWithMultipleSteps(const int dataSize) {
     return min(GRID_SIZE, amountOfBlocksForReductionWithExtraStep(dataSize));
+}
+
+
+int amountOfBlocksForReductionWithConsecutiveMemoryAdressing(const int dataSize) {
+    const int blockSizedChunksReducedPerBlock = 4;
+    const int blocks = (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) / (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
+    return min(GRID_SIZE, blocks);
 }
 
 void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result) {

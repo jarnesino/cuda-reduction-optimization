@@ -13,5 +13,6 @@ __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(int *inp
 __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(int *inputData, int *outputData, unsigned int dataSize);
 __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(int *inputData, int *outputData, unsigned int dataSize);
 __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize);
+__global__ void reduce_using_8_operations_for_consecutive_memory_addressing(int *inputData, int *outputData, unsigned int dataSize);
 
-#endif // REDUCE_IMPLEMENTATIONS
+#endif  // REDUCE_IMPLEMENTATIONS

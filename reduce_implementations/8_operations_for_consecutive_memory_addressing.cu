@@ -3,17 +3,19 @@
 
 template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex);
 
-__global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_8_operations_for_consecutive_memory_addressing(int *inputData, int *outputData, unsigned int dataSize) {
     extern __shared__ int sharedData[];
 
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int elementsReducedByBlock = BLOCK_SIZE * 2;
+    int4 *inputDataForConsecutiveAccessing = (int4*)inputData;
+    unsigned int elementsReducedByBlock = BLOCK_SIZE;
     unsigned int index = blockIndex * elementsReducedByBlock + threadBlockIndex;
     unsigned int elementsReducedByGrid = elementsReducedByBlock * gridDim.x;
     sharedData[threadBlockIndex] = 0;
-    while (index < dataSize) {
-        sharedData[threadBlockIndex] += inputData[index] + inputData[index + BLOCK_SIZE];
+    while (index < (dataSize >> 2)) {
+        int4 input = inputDataForConsecutiveAccessing[index];
+        sharedData[threadBlockIndex] += input.x + input.y + input.z + input.w;
         index += elementsReducedByGrid;
     }
     __syncthreads();
@@ -50,10 +52,3 @@ __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex) {
     if (blockSize >= 4) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
     if (blockSize >= 2) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
 }
-
-/*
-
-For each sum in non-consecutive addresses, a sum operation is written in assembly (and therefore executing).
-There's a type that allows us to operate over four consecutive addresses with only one operation. We can take advantage of it for performance.
-
-*/
