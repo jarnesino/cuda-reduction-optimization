@@ -20,14 +20,14 @@ int main() {
     int* testingData = new int[dataSize];
     initializeTestingDataIn(testingData, dataSize);
 
-    reduce(0, reduce_using_0_interleaved_addressing_with_local_memory, 1, testingData, dataSize, startEvent, stopEvent);
-    reduce(1, reduce_using_1_interleaved_addressing_with_divergent_branching, 1, testingData, dataSize, startEvent, stopEvent);
-    reduce(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, 1, testingData, dataSize, startEvent, stopEvent);
-    reduce(3, reduce_using_3_sequential_addressing_with_idle_threads, 1, testingData, dataSize, startEvent, stopEvent);
-    reduce(4, reduce_using_4_first_add_during_load_with_loop_overhead, 2, testingData, dataSize, startEvent, stopEvent);
-    reduce(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, 2, testingData, dataSize, startEvent, stopEvent);
-    reduce(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, 2, testingData, dataSize, startEvent, stopEvent);
-    reduce7(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, 2, testingData, dataSize, startEvent, stopEvent);
+    reduce(0, reduce_using_0_interleaved_addressing_with_local_memory, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduce(1, reduce_using_1_interleaved_addressing_with_divergent_branching, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduce(2, reduce_using_2_interleaved_addressing_with_bank_conflicts, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduce(3, reduce_using_3_sequential_addressing_with_idle_threads, amountOfBlocksForStandardReduction, testingData, dataSize, startEvent, stopEvent);
+    reduce(4, reduce_using_4_first_add_during_load_with_loop_overhead, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduce(5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduce(6, reduce_using_6_complete_loop_unrolling_with_one_reduction, amountOfBlocksForReductionWithExtraStep, testingData, dataSize, startEvent, stopEvent);
+    reduce(7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, amountOfBlocksForReductionWithMultipleSteps, testingData, dataSize, startEvent, stopEvent);
 
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
@@ -40,86 +40,32 @@ int main() {
 void reduce(
     const int implementationNumber,
     reduceImplementationFunction implementation,
-    const int blockSizedChunksReducedPerBlock,
+    amountOfBlocksFunction amountOfBlocksFor,
     int* inputData,
     const int dataSize,
     cudaEvent_t startEvent,
     cudaEvent_t stopEvent
 ) {
-    const int threadsPerBlock = BLOCK_SIZE;
     const size_t dataSizeInBytes = dataSize * sizeof(int);
-    int amountOfBlocks = amountOfBlocksForReduction(dataSize, threadsPerBlock, blockSizedChunksReducedPerBlock);
+    int remainingElements = dataSize;
+    int amountOfBlocks = amountOfBlocksFor(remainingElements);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
     cudaMalloc((void **)&deviceOutputData, amountOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
+    const size_t sharedMemSize = BLOCK_SIZE * sizeof(int);
 
-    int remainingElements = dataSize;
     int *inputPointer = deviceInputData;
     int *outputPointer = deviceOutputData;
-    const size_t sharedMemSize = threadsPerBlock * sizeof(int);
 
     // Record the start event.
     cudaEventRecord(startEvent, 0);
 
     // Launch kernel for each block.
     while (remainingElements > 1) {
-        amountOfBlocks = amountOfBlocksForReduction(remainingElements, threadsPerBlock, blockSizedChunksReducedPerBlock);
-        implementation<<<amountOfBlocks, threadsPerBlock, sharedMemSize>>>(inputPointer, outputPointer, remainingElements);
-        cudaDeviceSynchronize();
-
-        remainingElements = amountOfBlocks;
-        inputPointer = outputPointer;
-        outputPointer += remainingElements;
-    }
-
-    // Record the stop event and wait for it to complete.
-    cudaEventRecord(stopEvent, 0);
-    cudaEventSynchronize(stopEvent);
-
-    int finalResult;
-    cudaMemcpy(&finalResult, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
-
-    float elapsedTimeInMilliseconds;
-    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
-
-    printImplementationData(implementationNumber, elapsedTimeInMilliseconds, finalResult);
-
-    cudaFree(deviceInputData);
-    cudaFree(deviceOutputData);
-}
-
-void reduce7(
-    const int implementationNumber,
-    reduceImplementationFunction implementation,
-    const int blockSizedChunksReducedPerBlock,
-    int* inputData,
-    const int dataSize,
-    cudaEvent_t startEvent,
-    cudaEvent_t stopEvent
-) {
-    const int threadsPerBlock = BLOCK_SIZE;
-    const size_t dataSizeInBytes = dataSize * sizeof(int);
-    int amountOfBlocks = 16;
-
-    int *deviceInputData, *deviceOutputData;
-    cudaMalloc((void **)&deviceInputData, dataSizeInBytes);
-    cudaMalloc((void **)&deviceOutputData, amountOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
-    cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
-
-    int remainingElements = dataSize;
-    int *inputPointer = deviceInputData;
-    int *outputPointer = deviceOutputData;
-    const size_t sharedMemSize = threadsPerBlock * sizeof(int);
-
-    // Record the start event.
-    cudaEventRecord(startEvent, 0);
-
-    // Launch kernel for each block.
-    while (remainingElements > 1) {
-        amountOfBlocks = min(amountOfBlocksForReduction(remainingElements, threadsPerBlock, blockSizedChunksReducedPerBlock), 16);
-        implementation<<<amountOfBlocks, threadsPerBlock, sharedMemSize>>>(inputPointer, outputPointer, remainingElements);
+        amountOfBlocks = amountOfBlocksFor(remainingElements);
+        implementation<<<amountOfBlocks, BLOCK_SIZE, sharedMemSize>>>(inputPointer, outputPointer, remainingElements);
         cudaDeviceSynchronize();
 
         remainingElements = amountOfBlocks;
@@ -144,8 +90,19 @@ void reduce7(
 }
 
 
-int amountOfBlocksForReduction(const int dataSize, const int threadsPerBlock, const int blockSizedChunksReducedPerBlock) {
-    return (dataSize + threadsPerBlock * blockSizedChunksReducedPerBlock - 1) / (threadsPerBlock * blockSizedChunksReducedPerBlock);
+int amountOfBlocksForStandardReduction(const int dataSize) {
+    return (dataSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
+}
+
+
+int amountOfBlocksForReductionWithExtraStep(const int dataSize) {
+    const int blockSizedChunksReducedPerBlock = 2;
+    return (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) / (BLOCK_SIZE * 2);
+}
+
+
+int amountOfBlocksForReductionWithMultipleSteps(const int dataSize) {
+    return min(GRID_SIZE, amountOfBlocksForReductionWithExtraStep(dataSize));
 }
 
 void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result) {
