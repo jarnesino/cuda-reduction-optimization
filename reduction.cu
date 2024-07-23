@@ -130,6 +130,6 @@ void printImplementationData(const int implementationNumber, float elapsedTimeIn
 
 void initializeTestingDataIn(int *data, int size) {
     for (int index = 0; index < size; ++index) {
-        data[index] = 1;
+        data[index] = rand() % 100;
     }
 }
