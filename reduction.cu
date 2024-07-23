@@ -106,9 +106,9 @@ int amountOfBlocksForReductionWithMultipleSteps(const int dataSize) {
 }
 
 void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result) {
-    std::cout << "*** Implementation number: " << implementationNumber;
-    std::cout << "\t Elapsed time: " << elapsedTimeInMilliseconds << " ms";
-    std::cout << "\t Reduction result: " << result << std::endl;
+    printf("*** Implementation number: %d", implementationNumber);
+    printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
+    printf("\t Reduction result: %d\n", result);
 }
 
 void initializeTestingDataIn(int *data, int size) {
