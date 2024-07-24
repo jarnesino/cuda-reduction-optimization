@@ -5,8 +5,6 @@
 Playing around with CUDA optimizations.
 https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 
-TODO: Add time complexity explanations.
-
 */
 
 int main() {
