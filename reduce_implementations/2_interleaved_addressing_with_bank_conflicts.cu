@@ -38,6 +38,6 @@ The memory bank conflicts are produced in the line when indexing with (int index
 Accessing shared memory in indexes (2 * amountOfElementsReduced * threadIndex) and that plus (amountOfElementsReduced) may lead to conflicts.
 This is because amountOfElementsReduced is growing each iteration, which can cause a thread to access another thread's memory bank (even in the same warp).
 The solution would be to make the addressing sequential instead of interleaved, reducing the distance between both memory accesses in each iteration.
-This helps reduce the likelyhood of accessing a memory bank belonging to another thread in the same warp.
+This helps reduce the likelihood of accessing a memory bank belonging to another thread in the same warp.
 
 */

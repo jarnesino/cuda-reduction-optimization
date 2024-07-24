@@ -34,7 +34,7 @@ When threads in a warp diverge, the warp serializes the execution of different p
 Some threads in the warp are executing while others aren't.
 It introduces additional overhead.
 
-The divergent branching here is produced when the if statment checks for (threadBlockIndex % (2 * amountOfElementsReduced) == 0).
+The divergent branching here is produced when the if statement checks for (threadBlockIndex % (2 * amountOfElementsReduced) == 0).
 Only one in every (2 * amountOfElementsReduced) consecutive threads is running the instructions inside the if statement.
 Therefore, not all threads inside the warp are running that instruction, leading to divergent branching.
 
