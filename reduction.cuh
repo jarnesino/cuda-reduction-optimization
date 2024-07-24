@@ -2,7 +2,6 @@
 #define REDUCTION
 
 #include <iostream>
-#include <iomanip>
 #include "reduce_implementations/reduce_implementations.cuh"
 
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
