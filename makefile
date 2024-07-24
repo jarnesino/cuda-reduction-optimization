@@ -16,5 +16,7 @@ run: build
 	./$(REDUCTION_TARGET)
 	$(MAKE) clean
 
+all: run
+
 clean:
 	rm -f $(REDUCTION_TARGET)
