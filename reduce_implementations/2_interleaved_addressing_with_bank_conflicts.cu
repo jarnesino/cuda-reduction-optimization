@@ -1,7 +1,9 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-__global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(
+        int *inputData, int *outputData, unsigned int dataSize
+) {
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
@@ -12,7 +14,7 @@ __global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(int *i
     __syncthreads();
 
     // Do reduction in shared memory.
-    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
+    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
         int index = 2 * amountOfElementsReduced * threadBlockIndex;  // This indexing may produce memory bank conflicts.
         if (index < BLOCK_SIZE) {
             sharedData[index] += sharedData[index + amountOfElementsReduced];

@@ -1,7 +1,9 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-__global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(
+        int *inputData, int *outputData, unsigned int dataSize
+) {
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
@@ -12,7 +14,7 @@ __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(i
     __syncthreads();
 
     // Do reduction in shared memory.
-    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
+    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
         if (threadBlockIndex % (2 * amountOfElementsReduced) == 0) {  // This instruction produces divergent branching.
             sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsReduced];
         }

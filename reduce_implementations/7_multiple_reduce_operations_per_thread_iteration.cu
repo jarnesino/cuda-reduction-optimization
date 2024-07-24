@@ -1,9 +1,12 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-template <unsigned int blockSize> __device__ void warpReduce(volatile int* sharedData, int threadBlockIndex);
+template<unsigned int blockSize>
+__device__ void warpReduce(volatile int *sharedData, int threadBlockIndex);
 
-__global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(
+        int *inputData, int *outputData, unsigned int dataSize
+) {
     extern __shared__ int sharedData[];
 
     unsigned int blockIndex = blockIdx.x;
@@ -41,8 +44,9 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(i
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
-template <unsigned int blockSize>  // Needed because this is a device function which can't access the BLOCK_SIZE constant.
-__device__ void warpReduce(volatile int* sharedData, int threadBlockIndex) {
+// Template parameters are needed because device functions cannot access constants, and we want it at compile time.
+template<unsigned int blockSize>
+__device__ void warpReduce(volatile int *sharedData, int threadBlockIndex) {
     if (blockSize >= 64) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 32];
     if (blockSize >= 32) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 16];
     if (blockSize >= 16) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 8];

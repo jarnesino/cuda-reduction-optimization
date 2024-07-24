@@ -1,14 +1,16 @@
 #include "reduce_implementations.cuh"
 #include "../reduction.cuh"
 
-__global__ void reduce_using_0_interleaved_addressing_with_local_memory(int *inputData, int *outputData, unsigned int dataSize) {
+__global__ void reduce_using_0_interleaved_addressing_with_local_memory(
+        int *inputData, int *outputData, unsigned int dataSize
+) {
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
     unsigned int threadIndex = blockIndex * BLOCK_SIZE + threadBlockIndex;
     __syncthreads();
 
     // Do reduction in global memory. Causes slow access speeds.
-    for(unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
+    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < BLOCK_SIZE; amountOfElementsReduced *= 2) {
         if (threadBlockIndex % (2 * amountOfElementsReduced) == 0) {
             inputData[threadIndex] += inputData[threadIndex + amountOfElementsReduced];
         }
