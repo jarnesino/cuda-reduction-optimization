@@ -1,5 +1,4 @@
 #include "reduce_implementations.cuh"
-#include "../reduction.cuh"
 
 __global__ void reduce_using_3_sequential_addressing_with_idle_threads(
         int *inputData, int *outputData, unsigned int dataSize
@@ -7,15 +6,16 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(
     extern __shared__ int sharedData[];
 
     // Load one element from global to shared memory in each thread.
+    unsigned int blockSize = blockDim.x;
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIndex * BLOCK_SIZE + threadBlockIndex;
+    unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
     sharedData[threadBlockIndex] = inputData[threadIndex];
     __syncthreads();
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = BLOCK_SIZE / 2;
+            unsigned int amountOfElementsToReduce = blockSize / 2;
             amountOfElementsToReduce > 0;
             amountOfElementsToReduce >>= 1
             ) {

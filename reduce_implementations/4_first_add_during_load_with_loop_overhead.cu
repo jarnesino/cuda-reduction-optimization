@@ -1,20 +1,20 @@
 #include "reduce_implementations.cuh"
-#include "../reduction.cuh"
 
 __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
 
+    unsigned int blockSize = blockDim.x;
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIndex * BLOCK_SIZE * 2 + threadBlockIndex;
-    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + BLOCK_SIZE];
+    unsigned int threadIndex = blockIndex * blockSize * 2 + threadBlockIndex;
+    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + blockSize];
     __syncthreads();
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = BLOCK_SIZE / 2;
+            unsigned int amountOfElementsToReduce = blockSize / 2;
             amountOfElementsToReduce > 0;
             amountOfElementsToReduce >>= 1
             ) {  // This loop produces instruction overhead.

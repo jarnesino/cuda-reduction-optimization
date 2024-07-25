@@ -1,5 +1,4 @@
 #include "reduce_implementations.cuh"
-#include "../reduction.cuh"
 
 __device__ void warpReduce(volatile int *sharedData, int threadIndex);
 
@@ -8,15 +7,16 @@ __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(
 ) {
     extern __shared__ int sharedData[];
 
+    unsigned int blockSize = blockDim.x;
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
-    unsigned int threadIndex = blockIndex * BLOCK_SIZE * 2 + threadBlockIndex;
-    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + BLOCK_SIZE];
+    unsigned int threadIndex = blockIndex * blockSize * 2 + threadBlockIndex;
+    sharedData[threadBlockIndex] = inputData[threadIndex] + inputData[threadIndex + blockSize];
     __syncthreads();
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = BLOCK_SIZE / 2;
+            unsigned int amountOfElementsToReduce = blockSize / 2;
             amountOfElementsToReduce > 32;
             amountOfElementsToReduce >>= 1
             ) {  // This loop produces instruction overhead.
