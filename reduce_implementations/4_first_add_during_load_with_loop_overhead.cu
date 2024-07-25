@@ -14,7 +14,7 @@ __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = blockSize / 2;
+            unsigned int amountOfElementsToReduce = blockSize >> 1;
             amountOfElementsToReduce > 0;
             amountOfElementsToReduce >>= 1
             ) {  // This loop produces instruction overhead.

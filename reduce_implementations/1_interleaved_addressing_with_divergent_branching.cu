@@ -14,8 +14,8 @@ __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(
     __syncthreads();
 
     // Do reduction in shared memory.
-    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced *= 2) {
-        if (threadBlockIndex % (2 * amountOfElementsReduced) == 0) {  // This instruction produces divergent branching.
+    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced <<= 1) {
+        if (threadBlockIndex % (amountOfElementsReduced << 1) == 0) {  // This instruction produces divergent branching.
             sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsReduced];
         }
         __syncthreads();

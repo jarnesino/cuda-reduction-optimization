@@ -15,7 +15,7 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = blockSize / 2;
+            unsigned int amountOfElementsToReduce = blockSize >> 1;
             amountOfElementsToReduce > 0;
             amountOfElementsToReduce >>= 1
             ) {

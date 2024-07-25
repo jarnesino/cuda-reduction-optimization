@@ -16,7 +16,7 @@ __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = blockSize / 2;
+            unsigned int amountOfElementsToReduce = blockSize >> 1;
             amountOfElementsToReduce > 32;
             amountOfElementsToReduce >>= 1
             ) {  // This loop produces instruction overhead.
