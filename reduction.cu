@@ -58,7 +58,7 @@ int main() {
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 /* Auxiliary */
@@ -87,7 +87,7 @@ void reduceAndMeasureTime(
     int *outputPointer = deviceOutputData;
 
     // Record the start event.
-    cudaEventRecord(startEvent, 0);
+    cudaEventRecord(startEvent, nullptr);
 
     // Launch kernel for each block.
     while (remainingElements > 1) {
@@ -104,7 +104,7 @@ void reduceAndMeasureTime(
     }
 
     // Record the stop event and wait for it to complete.
-    cudaEventRecord(stopEvent, 0);
+    cudaEventRecord(stopEvent, nullptr);
     cudaEventSynchronize(stopEvent);
 
     int finalResult;
