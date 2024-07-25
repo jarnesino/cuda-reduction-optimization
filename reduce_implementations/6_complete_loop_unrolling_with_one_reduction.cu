@@ -2,7 +2,7 @@
 #include "../reduction.cuh"
 
 template<unsigned int blockSize>
-__device__ void warpReduce(volatile int *sharedData, int threadBlockIndex);
+__device__ void warpReduce(volatile int *sharedData, unsigned int threadBlockIndex);
 
 __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(
         int *inputData, int *outputData, unsigned int dataSize
@@ -40,13 +40,13 @@ __global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(
 
 // Template parameters are needed because device functions cannot access constants, and we want it at compile time.
 template<unsigned int blockSize>
-__device__ void warpReduce(volatile int *sharedData, int threadBlockIndex) {
-    if (blockSize >= 64) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 32];
-    if (blockSize >= 32) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 16];
-    if (blockSize >= 16) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 8];
-    if (blockSize >= 8) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 4];
-    if (blockSize >= 4) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
-    if (blockSize >= 2) sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
+__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
+    if (blockSize >= 64) data[threadBlockIndex] += data[threadBlockIndex + 32];
+    if (blockSize >= 32) data[threadBlockIndex] += data[threadBlockIndex + 16];
+    if (blockSize >= 16) data[threadBlockIndex] += data[threadBlockIndex + 8];
+    if (blockSize >= 8) data[threadBlockIndex] += data[threadBlockIndex + 4];
+    if (blockSize >= 4) data[threadBlockIndex] += data[threadBlockIndex + 2];
+    if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
 
 /*

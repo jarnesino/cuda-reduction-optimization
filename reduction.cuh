@@ -7,26 +7,28 @@
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
 
-typedef int (*amountOfBlocksFunction)(const int dataSize);
+typedef unsigned int (*amountOfBlocksFunction)(const unsigned int dataSize);
 
 void reduceAndMeasureTime(
-        const int implementationNumber, reduceImplementationFunction implementation,
-        amountOfBlocksFunction amountOfBlocksFor, int *inputData, const int dataSize,
+        unsigned int implementationNumber, reduceImplementationFunction implementation,
+        amountOfBlocksFunction amountOfBlocksFor, int *inputData, unsigned int dataSize,
         cudaEvent_t startEvent, cudaEvent_t stopEvent
 );
 
 void checkForCUDAErrors();
 
-int amountOfBlocksForStandardReduction(const int dataSize);
+unsigned int amountOfBlocksForStandardReduction(unsigned int dataSize);
 
-int amountOfBlocksForReductionWithExtraStep(const int dataSize);
+unsigned int amountOfBlocksForReductionWithExtraStep(unsigned int dataSize);
 
-int amountOfBlocksForReductionWithMultipleSteps(const int dataSize);
+unsigned int amountOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
-int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(const int dataSize);
+unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-void printImplementationData(const int implementationNumber, float elapsedTimeInMilliseconds, int result);
+void printImplementationData(unsigned int implementationNumber, float elapsedTimeInMilliseconds, int result);
 
 void initializeTestingDataIn(int *data, int size);
+
+unsigned int unsignedMin(unsigned int a, unsigned int b);
 
 #endif  // REDUCTION

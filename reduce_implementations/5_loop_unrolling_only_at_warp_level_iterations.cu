@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__device__ void warpReduce(volatile int *sharedData, int threadIndex);
+__device__ void warpReduce(volatile int *data, unsigned int threadIndex);
 
 __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(
         int *inputData, int *outputData, unsigned int dataSize
@@ -31,13 +31,13 @@ __global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
-__device__ void warpReduce(volatile int *sharedData, int threadBlockIndex) {
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 32];
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 16];
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 8];
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 4];
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 2];
-    sharedData[threadBlockIndex] += sharedData[threadBlockIndex + 1];
+__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
+    data[threadBlockIndex] += data[threadBlockIndex + 32];
+    data[threadBlockIndex] += data[threadBlockIndex + 16];
+    data[threadBlockIndex] += data[threadBlockIndex + 8];
+    data[threadBlockIndex] += data[threadBlockIndex + 4];
+    data[threadBlockIndex] += data[threadBlockIndex + 2];
+    data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
 
 /*
