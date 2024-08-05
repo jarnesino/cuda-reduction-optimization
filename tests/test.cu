@@ -32,7 +32,6 @@ int main() {
     if (context.shouldExit())
         return res;  // Propagate test results.
 
-    int client_stuff_return_code = 0;
-
-    return res + client_stuff_return_code;  // Propagate test results.
+    int clientStuffReturnCode = 0;
+    return res + clientStuffReturnCode;  // Propagate test results.
 }
