@@ -12,24 +12,28 @@ void printImplementationData(unsigned int implementationNumber, float elapsedTim
 int main() {
     const unsigned int logDataSize = 30;
     const unsigned int dataSize = 1 << logDataSize;
-    int *testingData = new int[dataSize];
-    initializeTestingDataIn(testingData, dataSize);
 
-    float elapsedTimeInReduction[AMOUNT_OF_IMPLEMENTATIONS];
+    const unsigned int SAMPLE_SIZE = 20;
+    float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};  // Default constructor fills array with zeroes.
 
-    for (unsigned int implementationIndex = 0; implementationIndex < AMOUNT_OF_IMPLEMENTATIONS; implementationIndex++) {
-        const unsigned int SAMPLE_SIZE = 20;
-        float sumOfElapsedTimesInMilliseconds = 0;
+    for (unsigned int sampleIndex = 0; sampleIndex < SAMPLE_SIZE; sampleIndex++) {
+        printf("Generating data for sample %d\n", sampleIndex);
+        int *testingData = new int[dataSize];
+        initializeTestingDataIn(testingData, dataSize);
 
-        for (unsigned int sampleIndex = 0; sampleIndex < SAMPLE_SIZE; sampleIndex++) {
+        for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
                     reduceImplementations[implementationIndex], testingData, dataSize
             );
-            sumOfElapsedTimesInMilliseconds += reductionResultForImplementation.elapsedTimeInMilliseconds;
-        }
+            elapsedTimesInMilliseconds[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
 
-        elapsedTimeInReduction[implementationIndex] = sumOfElapsedTimesInMilliseconds / SAMPLE_SIZE;
-        printImplementationData(implementationIndex, elapsedTimeInReduction[implementationIndex]);
+            printf("Completed sample %d for implementation %d\n", sampleIndex, implementationIndex);
+        }
+    }
+
+    for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
+        elapsedTimesInMilliseconds[implementationIndex] /= SAMPLE_SIZE;
+        printImplementationData(implementationIndex, elapsedTimesInMilliseconds[implementationIndex]);
     }
 
     return EXIT_SUCCESS;

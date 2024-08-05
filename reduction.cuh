@@ -6,7 +6,7 @@
 
 struct ReductionResult {
     int value;
-    float elapsedTimeInMilliseconds;
+    float elapsedMilliseconds;
 };
 
 typedef unsigned int (*numberOfBlocksFunction)(const unsigned int dataSize);

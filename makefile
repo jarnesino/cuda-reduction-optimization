@@ -10,6 +10,7 @@ TEST_TARGET = test
 .PHONY: build run clean
 
 build: $(BENCHMARKS_TARGET)
+
 build_for_testing: $(TEST_TARGET)
 
 $(BENCHMARKS_TARGET): benchmarks.cu $(REDUCTION_FILES)
