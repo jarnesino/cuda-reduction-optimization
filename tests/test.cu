@@ -10,6 +10,36 @@ TEST_SUITE("reduction of arrays with different sizes") {
         return sum;
     }
 
+    TEST_CASE("reduce small arrays") {
+        const unsigned int logDataSize = 8;
+        const unsigned int dataSize = 1 << logDataSize;
+        int *testingData = new int[dataSize];
+        int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
+
+        for (const auto &reduceImplementation: reduceImplementations) {
+            ReductionResult reductionResult = reduceAndMeasureTime(
+                    reduceImplementation, testingData, dataSize
+            );
+
+            CHECK_EQ(reductionResult.value, expectedSum);
+        }
+    }
+
+    TEST_CASE("reduce medium arrays") {
+        const unsigned int logDataSize = 17;
+        const unsigned int dataSize = 1 << logDataSize;
+        int *testingData = new int[dataSize];
+        int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
+
+        for (const auto &reduceImplementation: reduceImplementations) {
+            ReductionResult reductionResult = reduceAndMeasureTime(
+                    reduceImplementation, testingData, dataSize
+            );
+
+            CHECK_EQ(reductionResult.value, expectedSum);
+        }
+    }
+
     TEST_CASE("reduce big arrays") {
         const unsigned int logDataSize = 30;
         const unsigned int dataSize = 1 << logDataSize;
