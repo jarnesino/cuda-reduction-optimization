@@ -10,7 +10,7 @@ https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 
 void measureAndSumElapsedTimes(unsigned int dataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
 
-void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds);
+void printBenchmarkStats(unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds);
 
 void initializeRandomBenchmarkingDataIn(int *data, unsigned int size);
 
@@ -58,7 +58,7 @@ void measureAndSumElapsedTimes(
 
 void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds) {
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
-        sumOfElapsedTimesInMilliseconds[implementationIndex] /= SAMPLE_SIZE;
+        sumOfElapsedTimesInMilliseconds[implementationIndex] /= (float)SAMPLE_SIZE;
 
         float timesFaster = sumOfElapsedTimesInMilliseconds[0] / sumOfElapsedTimesInMilliseconds[implementationIndex];
         float percentageOfTimeSaved = (
@@ -68,7 +68,10 @@ void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *sumOfElapsedTime
         );
 
         printImplementationData(
-                implementationIndex, sumOfElapsedTimesInMilliseconds[implementationIndex], timesFaster, percentageOfTimeSaved
+                implementationIndex,
+                sumOfElapsedTimesInMilliseconds[implementationIndex],
+                timesFaster,
+                percentageOfTimeSaved
         );
     }
 }
