@@ -11,7 +11,10 @@ https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 void initializeRandomBenchmarkingDataIn(int *data, int size);
 
 void printImplementationData(
-        unsigned int implementationNumber, float elapsedTimeInMilliseconds, float percentageOfTimeSaved
+        unsigned int implementationNumber,
+        float elapsedTimeInMilliseconds,
+        float timesFaster,
+        float percentageOfTimeSaved
 );
 
 int main() {
@@ -40,13 +43,15 @@ int main() {
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
         elapsedTimesInMilliseconds[implementationIndex] /= SAMPLE_SIZE;
 
+        float timesFaster = elapsedTimesInMilliseconds[0] / elapsedTimesInMilliseconds[implementationIndex];
         float percentageOfTimeSaved = (
                 100.0f
                 * (elapsedTimesInMilliseconds[0] - elapsedTimesInMilliseconds[implementationIndex])
                 / elapsedTimesInMilliseconds[0]
         );
+
         printImplementationData(
-                implementationIndex, elapsedTimesInMilliseconds[implementationIndex], percentageOfTimeSaved
+                implementationIndex, elapsedTimesInMilliseconds[implementationIndex], timesFaster, percentageOfTimeSaved
         );
     }
 
@@ -54,10 +59,14 @@ int main() {
 }
 
 void printImplementationData(
-        const unsigned int implementationNumber, float elapsedTimeInMilliseconds, float percentageOfTimeSaved
+        const unsigned int implementationNumber,
+        float elapsedTimeInMilliseconds,
+        float timesFaster,
+        float percentageOfTimeSaved
 ) {
     printf("*** Implementation number: %d", implementationNumber);
     printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
+    printf("\t Times faster than base implementation: %f\n", timesFaster);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
 }
 
