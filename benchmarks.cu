@@ -66,7 +66,7 @@ void measureAndSumElapsedTimes(
             printf("Completed sample %d for implementation %d\n", sampleNumber, implementationIndex);
         }
 
-        ReductionResult reductionResultForThrust = reduceWithCudaThrustLibrary(testingData, dataSize);
+        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
         elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] += reductionResultForThrust.elapsedMilliseconds;
         printf("Completed sample %d for thrust implementation\n", sampleNumber);
     }

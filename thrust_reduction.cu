@@ -1,6 +1,6 @@
 #include "thrust_reduction.cuh"
 
-ReductionResult reduceWithCudaThrustLibrary(int *inputData, unsigned int size) {
+ReductionResult reduceAndMeasureTimeWithThrust(int *inputData, unsigned int size) {
     thrust::device_vector<int> deviceInputData(inputData, inputData + size);
 
     // Create CUDA events for timing.
