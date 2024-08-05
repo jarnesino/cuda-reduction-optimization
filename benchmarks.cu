@@ -42,7 +42,7 @@ void measureAndSumElapsedTimes(
     int *testingData = new int[dataSize];
 
     for (unsigned int sampleIndex = 0; sampleIndex < SAMPLE_SIZE; sampleIndex++) {
-        printf("Generating data for sample %d\n", sampleIndex);
+        printf("Generating data for sample %d\n", sampleIndex + 1);
         initializeRandomBenchmarkingDataIn(testingData, dataSize);
 
         for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
