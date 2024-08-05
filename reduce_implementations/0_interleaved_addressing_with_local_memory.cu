@@ -10,9 +10,9 @@ __global__ void reduce_using_0_interleaved_addressing_with_local_memory(
     __syncthreads();
 
     // Do reduction in global memory. Causes slow access speeds.
-    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced <<= 1) {
-        if (threadBlockIndex % (amountOfElementsReduced << 1) == 0) {
-            inputData[threadIndex] += inputData[threadIndex + amountOfElementsReduced];
+    for (unsigned int numberOfElementsReduced = 1; numberOfElementsReduced < blockSize; numberOfElementsReduced <<= 1) {
+        if (threadBlockIndex % (numberOfElementsReduced << 1) == 0) {
+            inputData[threadIndex] += inputData[threadIndex + numberOfElementsReduced];
         }
         __syncthreads();
     }

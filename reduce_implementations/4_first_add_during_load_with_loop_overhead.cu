@@ -14,12 +14,12 @@ __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = blockSize >> 1;
-            amountOfElementsToReduce > 0;
-            amountOfElementsToReduce >>= 1
+            unsigned int numberOfElementsToReduce = blockSize >> 1;
+            numberOfElementsToReduce > 0;
+            numberOfElementsToReduce >>= 1
             ) {  // This loop produces instruction overhead.
-        if (threadBlockIndex < amountOfElementsToReduce) {
-            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsToReduce];
+        if (threadBlockIndex < numberOfElementsToReduce) {
+            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + numberOfElementsToReduce];
         }
         __syncthreads();
     }
@@ -33,7 +33,7 @@ __global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
 Loops like this one produce instruction overhead.
 
 Unrolling the loop could be a good solution.
-We know all threads in a warp are SIMD-synchronous. Then, we could safely unroll the last warp, when (amountOfElementsToReduce <= 32).
+We know all threads in a warp are SIMD-synchronous. Then, we could safely unroll the last warp, when (numberOfElementsToReduce <= 32).
 The if statement is also unnecessary, because it doesn't save work between threads in a warp.
 
 */

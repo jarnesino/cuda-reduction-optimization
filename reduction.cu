@@ -2,7 +2,7 @@
 
 ReductionResult reduceAndMeasureTime(
         reduceImplementationFunction implementation,
-        amountOfBlocksFunction amountOfBlocksFor,
+        numberOfBlocksFunction numberOfBlocksFor,
         int *inputData,
         const unsigned int dataSize
 ) {
@@ -14,12 +14,12 @@ ReductionResult reduceAndMeasureTime(
 
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
-    unsigned int amountOfBlocks = amountOfBlocksFor(remainingElements);
+    unsigned int numberOfBlocks = numberOfBlocksFor(remainingElements);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **) &deviceInputData, dataSizeInBytes);
     cudaMalloc((void **) &deviceOutputData,
-               amountOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
+               numberOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
     const size_t sharedMemSize = BLOCK_SIZE * sizeof(int);
 
@@ -31,14 +31,14 @@ ReductionResult reduceAndMeasureTime(
 
     // Launch kernel for each block.
     while (remainingElements > 1) {
-        amountOfBlocks = amountOfBlocksFor(remainingElements);
-        implementation<<<amountOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
+        numberOfBlocks = numberOfBlocksFor(remainingElements);
+        implementation<<<numberOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
                 inputPointer, outputPointer, remainingElements
         );
         cudaDeviceSynchronize();
         checkForCUDAErrors();
 
-        remainingElements = amountOfBlocks;
+        remainingElements = numberOfBlocks;
         inputPointer = outputPointer;
         outputPointer += remainingElements;
     }
@@ -71,24 +71,24 @@ void checkForCUDAErrors() {
     }
 }
 
-unsigned int amountOfBlocksForStandardReduction(const unsigned int dataSize) {
+unsigned int numberOfBlocksForStandardReduction(const unsigned int dataSize) {
     return (dataSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
 }
 
 
-unsigned int amountOfBlocksForReductionWithExtraStep(const unsigned int dataSize) {
+unsigned int numberOfBlocksForReductionWithExtraStep(const unsigned int dataSize) {
     const int blockSizedChunksReducedPerBlock = 2;
     return (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) /
            (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
 }
 
 
-unsigned int amountOfBlocksForReductionWithMultipleSteps(const unsigned int dataSize) {
-    return unsignedMin(GRID_SIZE, amountOfBlocksForReductionWithExtraStep(dataSize));
+unsigned int numberOfBlocksForReductionWithMultipleSteps(const unsigned int dataSize) {
+    return unsignedMin(GRID_SIZE, numberOfBlocksForReductionWithExtraStep(dataSize));
 }
 
 
-unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(const unsigned int dataSize) {
+unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(const unsigned int dataSize) {
     const unsigned int blockSizedChunksReducedPerBlock = 4;
     const unsigned int blocks = (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) /
                                 (BLOCK_SIZE * blockSizedChunksReducedPerBlock);

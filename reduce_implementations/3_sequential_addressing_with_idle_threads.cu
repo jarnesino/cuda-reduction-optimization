@@ -15,13 +15,13 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(
 
     // Do reduction in shared memory.
     for (
-            unsigned int amountOfElementsToReduce = blockSize >> 1;
-            amountOfElementsToReduce > 0;
-            amountOfElementsToReduce >>= 1
+            unsigned int numberOfElementsToReduce = blockSize >> 1;
+            numberOfElementsToReduce > 0;
+            numberOfElementsToReduce >>= 1
             ) {
         if (threadBlockIndex <
-            amountOfElementsToReduce) {  // This if statement makes many threads idle threads in each iteration.
-            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsToReduce];
+            numberOfElementsToReduce) {  // This if statement makes many threads idle threads in each iteration.
+            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + numberOfElementsToReduce];
         }
         __syncthreads();
     }
@@ -34,7 +34,7 @@ __global__ void reduce_using_3_sequential_addressing_with_idle_threads(
 
 Leaving idle threads is wasting parallel processing power.
 
-In the first loop iteration, the condition (threadIndex < amountOfElementsToReduce) leaves half of the threads idle.
-The amount of useful threads halves in each iteration.
+In the first loop iteration, the condition (threadIndex < numberOfElementsToReduce) leaves half of the threads idle.
+The number of useful threads halves in each iteration.
 
 */

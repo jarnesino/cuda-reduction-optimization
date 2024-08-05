@@ -6773,7 +6773,7 @@ private:
     class : public std::streambuf
     {
     private:
-        // allowing some buffering decreases the amount of calls to overflow
+        // allowing some buffering decreases the number of calls to overflow
         char buf[1024];
 
     protected:

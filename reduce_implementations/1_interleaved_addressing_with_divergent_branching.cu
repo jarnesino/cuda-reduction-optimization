@@ -14,9 +14,9 @@ __global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(
     __syncthreads();
 
     // Do reduction in shared memory.
-    for (unsigned int amountOfElementsReduced = 1; amountOfElementsReduced < blockSize; amountOfElementsReduced <<= 1) {
-        if (threadBlockIndex % (amountOfElementsReduced << 1) == 0) {  // This instruction produces divergent branching.
-            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + amountOfElementsReduced];
+    for (unsigned int numberOfElementsReduced = 1; numberOfElementsReduced < blockSize; numberOfElementsReduced <<= 1) {
+        if (threadBlockIndex % (numberOfElementsReduced << 1) == 0) {  // This instruction produces divergent branching.
+            sharedData[threadBlockIndex] += sharedData[threadBlockIndex + numberOfElementsReduced];
         }
         __syncthreads();
     }
@@ -34,8 +34,8 @@ When threads in a warp diverge, the warp serializes the execution of different p
 Some threads in the warp are executing while others aren't.
 It introduces additional overhead.
 
-The divergent branching here is produced when the if statement checks for (threadBlockIndex % (2 * amountOfElementsReduced) == 0).
-Only one in every (2 * amountOfElementsReduced) consecutive threads is running the instructions inside the if statement.
+The divergent branching here is produced when the if statement checks for (threadBlockIndex % (2 * numberOfElementsReduced) == 0).
+Only one in every (2 * numberOfElementsReduced) consecutive threads is running the instructions inside the if statement.
 Therefore, not all threads inside the warp are running that instruction, leading to divergent branching.
 
 */

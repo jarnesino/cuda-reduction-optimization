@@ -17,7 +17,7 @@ TEST_SUITE("reduction of arrays with different sizes") {
 
         ReductionResult reductionResult = reduceAndMeasureTime(
                 reduce_using_8_operations_for_consecutive_memory_addressing,
-                amountOfBlocksForReductionWithConsecutiveMemoryAddressing, testingData, dataSize
+                numberOfBlocksForReductionWithConsecutiveMemoryAddressing, testingData, dataSize
         );
 
         printf("%d", testingData[0]);

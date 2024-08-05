@@ -12,22 +12,22 @@ struct ReductionResult {
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
 
-typedef unsigned int (*amountOfBlocksFunction)(const unsigned int dataSize);
+typedef unsigned int (*numberOfBlocksFunction)(const unsigned int dataSize);
 
 ReductionResult reduceAndMeasureTime(
         reduceImplementationFunction implementation,
-        amountOfBlocksFunction amountOfBlocksFor, int *inputData, unsigned int dataSize
+        numberOfBlocksFunction numberOfBlocksFor, int *inputData, unsigned int dataSize
 );
 
 void checkForCUDAErrors();
 
-unsigned int amountOfBlocksForStandardReduction(unsigned int dataSize);
+unsigned int numberOfBlocksForStandardReduction(unsigned int dataSize);
 
-unsigned int amountOfBlocksForReductionWithExtraStep(unsigned int dataSize);
+unsigned int numberOfBlocksForReductionWithExtraStep(unsigned int dataSize);
 
-unsigned int amountOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
+unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
-unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
+unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
 void initializeTestingDataIn(int *data, int size);
 
