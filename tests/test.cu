@@ -17,8 +17,7 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
         ReductionResult reductionResult = reduceAndMeasureTime(
-                reduceImplementations[8].function,
-                reduceImplementations[8].numberOfBlocksFunction, testingData, dataSize
+                reduceImplementations[8], testingData, dataSize
         );
 
         printf("%d", testingData[0]);
