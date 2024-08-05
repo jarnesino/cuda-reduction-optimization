@@ -1,6 +1,6 @@
 #include "reduction.cuh"
 
-void reduceAndMeasureTime(
+ReductionResult reduceAndMeasureTime(
         const unsigned int implementationNumber,
         reduceImplementationFunction implementation,
         amountOfBlocksFunction amountOfBlocksFor,
@@ -50,10 +50,12 @@ void reduceAndMeasureTime(
     float elapsedTimeInMilliseconds;
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
-    printImplementationData(implementationNumber, elapsedTimeInMilliseconds, finalResult);
+
 
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
+
+    return ReductionResult{finalResult, elapsedTimeInMilliseconds};
 }
 
 void checkForCUDAErrors() {
@@ -87,12 +89,6 @@ unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(const uns
     const unsigned int blocks = (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) /
                                 (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
     return unsignedMin(GRID_SIZE, blocks);
-}
-
-void printImplementationData(const unsigned int implementationNumber, float elapsedTimeInMilliseconds, int result) {
-    printf("*** Implementation number: %d", implementationNumber);
-    printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
-    printf("\t Reduction result: %d\n", result);
 }
 
 void initializeTestingDataIn(int *data, int size) {
