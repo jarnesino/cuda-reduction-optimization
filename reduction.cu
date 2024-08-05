@@ -1,5 +1,14 @@
 #include "reduction.cuh"
 
+int *reduce(
+        const ReduceImplementation &reduceImplementation,
+        unsigned int remainingElements,
+        unsigned int numberOfBlocks,
+        size_t sharedMemSize,
+        int *inputPointer,
+        int *outputPointer
+);
+
 ReductionResult reduceAndMeasureTime(
         ReduceImplementation reduceImplementation,
         int *inputData,
@@ -26,19 +35,9 @@ ReductionResult reduceAndMeasureTime(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
-    // Launch kernel for each block.
-    while (remainingElements > 1) {
-        numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
-        reduceImplementation.function<<<numberOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
-                inputPointer, outputPointer, remainingElements
-        );
-        cudaDeviceSynchronize();
-        checkForCUDAErrors();
-
-        remainingElements = numberOfBlocks;
-        inputPointer = outputPointer;
-        outputPointer += remainingElements;
-    }
+    inputPointer = reduce(
+            reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
+    );
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
@@ -58,6 +57,31 @@ ReductionResult reduceAndMeasureTime(
     cudaFree(deviceOutputData);
 
     return ReductionResult{value, elapsedTimeInMilliseconds};
+}
+
+int *reduce(
+        const ReduceImplementation &reduceImplementation,
+        unsigned int remainingElements,
+        unsigned int numberOfBlocks,
+        const size_t sharedMemSize,
+        int *inputPointer,
+        int *outputPointer
+) {
+    // Launch kernel for each block.
+    while (remainingElements > 1) {
+        numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
+        reduceImplementation.function<<<numberOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
+                inputPointer, outputPointer, remainingElements
+        );
+        cudaDeviceSynchronize();
+        checkForCUDAErrors();
+
+        remainingElements = numberOfBlocks;
+        inputPointer = outputPointer;
+        outputPointer += remainingElements;
+    }
+
+    return inputPointer;
 }
 
 void checkForCUDAErrors() {

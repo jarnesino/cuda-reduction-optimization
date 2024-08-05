@@ -26,7 +26,7 @@ int main() {
     const unsigned int dataSize = 1 << logDataSize;
 
     const unsigned int SAMPLE_SIZE = 5;
-    float sumOfElapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};  // Default constructor fills array with zeroes.
+    float sumOfElapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};  // Constructor fills array with zeroes.
 
     measureAndSumElapsedTimes(dataSize, SAMPLE_SIZE, sumOfElapsedTimesInMilliseconds);
     printBenchmarkStats(SAMPLE_SIZE, sumOfElapsedTimesInMilliseconds);
@@ -41,8 +41,8 @@ void measureAndSumElapsedTimes(
 ) {
     int *testingData = new int[dataSize];
 
-    for (unsigned int sampleIndex = 0; sampleIndex < SAMPLE_SIZE; sampleIndex++) {
-        printf("Generating data for sample %d\n", sampleIndex + 1);
+    for (unsigned int sampleNumber = 1; sampleNumber <= SAMPLE_SIZE; sampleNumber++) {
+        printf("Generating data for sample %d\n", sampleNumber);
         initializeRandomBenchmarkingDataIn(testingData, dataSize);
 
         for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
@@ -51,14 +51,14 @@ void measureAndSumElapsedTimes(
             );
             elapsedTimesInMilliseconds[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
 
-            printf("Completed sample %d for implementation %d\n", sampleIndex, implementationIndex);
+            printf("Completed sample %d for implementation %d\n", sampleNumber, implementationIndex);
         }
     }
 }
 
 void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds) {
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
-        sumOfElapsedTimesInMilliseconds[implementationIndex] /= (float)SAMPLE_SIZE;
+        sumOfElapsedTimesInMilliseconds[implementationIndex] /= (float) SAMPLE_SIZE;
 
         float timesFaster = sumOfElapsedTimesInMilliseconds[0] / sumOfElapsedTimesInMilliseconds[implementationIndex];
         float percentageOfTimeSaved = (
