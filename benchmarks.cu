@@ -25,7 +25,7 @@ int main() {
     const unsigned int logDataSize = 30;
     const unsigned int dataSize = 1 << logDataSize;
 
-    const unsigned int SAMPLE_SIZE = 20;
+    const unsigned int SAMPLE_SIZE = 5;
     float sumOfElapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};  // Default constructor fills array with zeroes.
 
     measureAndSumElapsedTimes(dataSize, SAMPLE_SIZE, sumOfElapsedTimesInMilliseconds);
