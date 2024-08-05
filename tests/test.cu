@@ -1,4 +1,5 @@
 #define DOCTEST_CONFIG_IMPLEMENT
+
 #include "doctest.h"
 #include "../reduction.cuh"
 
@@ -16,12 +17,12 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
         ReductionResult reductionResult = reduceAndMeasureTime(
-                reduce_using_8_operations_for_consecutive_memory_addressing,
-                numberOfBlocksForReductionWithConsecutiveMemoryAddressing, testingData, dataSize
+                reduceImplementations[8].function,
+                reduceImplementations[8].numberOfBlocksFunction, testingData, dataSize
         );
 
         printf("%d", testingData[0]);
-        CHECK_EQ(reductionResult.value , expectedSum);
+        CHECK_EQ(reductionResult.value, expectedSum);
     }
 }
 

@@ -3,7 +3,20 @@
 
 #include <cuda_runtime.h>
 
+const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
+const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
+
 typedef void (*reduceImplementationFunction)(int *inputData, int *outputData, unsigned int dataSize);
+
+typedef unsigned int (*numberOfBlocksFunction)(unsigned int dataSize);
+
+struct ReduceImplementation {
+    const int number;
+    reduceImplementationFunction function;
+    numberOfBlocksFunction numberOfBlocksFunction;
+};
+
+unsigned int unsignedMin(unsigned int a, unsigned int b);
 
 __global__ void reduce_using_0_interleaved_addressing_with_local_memory(
         int *inputData, int *outputData, unsigned int dataSize
@@ -40,5 +53,15 @@ __global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(
 __global__ void reduce_using_8_operations_for_consecutive_memory_addressing(
         int *inputData, int *outputData, unsigned int dataSize
 );
+
+unsigned int numberOfBlocksForStandardReduction(unsigned int dataSize);
+
+unsigned int numberOfBlocksForReductionWithExtraStep(unsigned int dataSize);
+
+unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
+
+unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
+
+extern ReduceImplementation reduceImplementations[9];
 
 #endif  // REDUCE_IMPLEMENTATIONS

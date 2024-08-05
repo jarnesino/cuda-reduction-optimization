@@ -71,30 +71,6 @@ void checkForCUDAErrors() {
     }
 }
 
-unsigned int numberOfBlocksForStandardReduction(const unsigned int dataSize) {
-    return (dataSize + BLOCK_SIZE - 1) / BLOCK_SIZE;
-}
-
-
-unsigned int numberOfBlocksForReductionWithExtraStep(const unsigned int dataSize) {
-    const int blockSizedChunksReducedPerBlock = 2;
-    return (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) /
-           (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
-}
-
-
-unsigned int numberOfBlocksForReductionWithMultipleSteps(const unsigned int dataSize) {
-    return unsignedMin(GRID_SIZE, numberOfBlocksForReductionWithExtraStep(dataSize));
-}
-
-
-unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(const unsigned int dataSize) {
-    const unsigned int blockSizedChunksReducedPerBlock = 4;
-    const unsigned int blocks = (dataSize + BLOCK_SIZE * blockSizedChunksReducedPerBlock - 1) /
-                                (BLOCK_SIZE * blockSizedChunksReducedPerBlock);
-    return unsignedMin(GRID_SIZE, blocks);
-}
-
 void initializeTestingDataIn(int *data, int size) {
     fillDataWith1s(data, size);
 }
@@ -103,8 +79,4 @@ void fillDataWith1s(int *data, int size) {
     for (int index = 0; index < size; ++index) {
         data[index] = 1;
     }
-}
-
-unsigned int unsignedMin(unsigned int a, unsigned int b) {
-    return a < b ? a : b;
 }
