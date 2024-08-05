@@ -16,12 +16,13 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
-        ReductionResult reductionResult = reduceAndMeasureTime(
-                reduceImplementations[8], testingData, dataSize
-        );
+        for (const auto &reduceImplementation: reduceImplementations) {
+            ReductionResult reductionResult = reduceAndMeasureTime(
+                    reduceImplementation, testingData, dataSize
+            );
 
-        printf("%d", testingData[0]);
-        CHECK_EQ(reductionResult.value, expectedSum);
+            CHECK_EQ(reductionResult.value, expectedSum);
+        }
     }
 }
 

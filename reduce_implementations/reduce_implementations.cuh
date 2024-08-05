@@ -62,6 +62,8 @@ unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-extern ReduceImplementation reduceImplementations[9];
+const unsigned int AMOUNT_OF_IMPLEMENTATIONS = 9;
+
+extern ReduceImplementation reduceImplementations[AMOUNT_OF_IMPLEMENTATIONS];
 
 #endif  // REDUCE_IMPLEMENTATIONS

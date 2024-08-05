@@ -15,7 +15,7 @@ int main() {
     int *testingData = new int[dataSize];
     initializeTestingDataIn(testingData, dataSize);
 
-    for (int implementationIndex = 0; implementationIndex < 9; implementationIndex++) {
+    for (unsigned int implementationIndex = 0; implementationIndex < AMOUNT_OF_IMPLEMENTATIONS; implementationIndex++) {
         ReductionResult reductionResult = reduceAndMeasureTime(
                 reduceImplementations[implementationIndex], testingData, dataSize
         );
