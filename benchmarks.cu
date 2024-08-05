@@ -1,4 +1,5 @@
 #include "reduction.cuh"
+#include <random>
 
 /*
 
@@ -6,6 +7,8 @@ Playing around with CUDA optimizations.
 https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 
 */
+
+void initializeRandomBenchmarkingDataIn(int *data, int size);
 
 void printImplementationData(
         unsigned int implementationNumber, float elapsedTimeInMilliseconds, float percentageOfTimeSaved
@@ -22,7 +25,7 @@ int main() {
 
     for (unsigned int sampleIndex = 0; sampleIndex < SAMPLE_SIZE; sampleIndex++) {
         printf("Generating data for sample %d\n", sampleIndex);
-        initializeTestingDataIn(testingData, dataSize);
+        initializeRandomBenchmarkingDataIn(testingData, dataSize);
 
         for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
@@ -56,4 +59,15 @@ void printImplementationData(
     printf("*** Implementation number: %d", implementationNumber);
     printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
+}
+
+void initializeRandomBenchmarkingDataIn(int *data, int size) {
+    std::random_device randomSeed;
+    std::mt19937 gen(randomSeed());
+    std::uniform_int_distribution<> uniformDistribution(-2000, 2000);
+
+    for (unsigned int index = 0; index < size; ++index) {
+        int randomNumber = uniformDistribution(gen);
+        data[index] = randomNumber;
+    }
 }

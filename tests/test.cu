@@ -6,7 +6,10 @@
 
 TEST_SUITE("reduction of arrays with different sizes") {
     int initializeTestingDataAndGetSum(int *data, unsigned int size) {
-        fillDataWith1s(data, size);
+        for (unsigned int index1 = 0; index1 < size; ++index1) {
+            data[index1] = 1;
+        }
+
         int sum = (int) size;
         return sum;
     }
