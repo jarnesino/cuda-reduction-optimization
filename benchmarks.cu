@@ -95,6 +95,6 @@ void printImplementationData(
 ) {
     printf("*** Implementation number: %d", implementationNumber);
     printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
-    printf("\t Times faster than base implementation: %f\n", timesFaster);
+    printf("\t Times faster than base implementation: %f", timesFaster);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
 }
