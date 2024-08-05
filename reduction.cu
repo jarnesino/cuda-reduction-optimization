@@ -5,12 +5,6 @@ ReductionResult reduceAndMeasureTime(
         int *inputData,
         const unsigned int dataSize
 ) {
-
-    // Create CUDA events for timing.
-    cudaEvent_t startEvent, stopEvent;
-    cudaEventCreate(&startEvent);
-    cudaEventCreate(&stopEvent);
-
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
     unsigned int numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
@@ -25,7 +19,11 @@ ReductionResult reduceAndMeasureTime(
     int *inputPointer = deviceInputData;
     int *outputPointer = deviceOutputData;
 
-    // Record the start event.
+    // Create CUDA events for timing.
+    cudaEvent_t startEvent, stopEvent;
+    cudaEventCreate(&startEvent);
+    cudaEventCreate(&stopEvent);
+    // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
     // Launch kernel for each block.
@@ -42,21 +40,22 @@ ReductionResult reduceAndMeasureTime(
         outputPointer += remainingElements;
     }
 
-    // Record the stop event and wait for it to complete.
+    // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
     cudaEventSynchronize(stopEvent);
-
-    int value;
-    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
 
     float elapsedTimeInMilliseconds;
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
-    cudaFree(deviceInputData);
-    cudaFree(deviceOutputData);
-
+    // Destroy the CUDA events for timing.
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
+
+    int value;
+    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
+
+    cudaFree(deviceInputData);
+    cudaFree(deviceOutputData);
 
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
