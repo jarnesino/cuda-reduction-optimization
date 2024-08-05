@@ -1,14 +1,17 @@
 #include "reduction.cuh"
 
 ReductionResult reduceAndMeasureTime(
-        const unsigned int implementationNumber,
         reduceImplementationFunction implementation,
         amountOfBlocksFunction amountOfBlocksFor,
         int *inputData,
-        const unsigned int dataSize,
-        cudaEvent_t startEvent,
-        cudaEvent_t stopEvent
+        const unsigned int dataSize
 ) {
+
+    // Create CUDA events for timing.
+    cudaEvent_t startEvent, stopEvent;
+    cudaEventCreate(&startEvent);
+    cudaEventCreate(&stopEvent);
+
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
     unsigned int amountOfBlocks = amountOfBlocksFor(remainingElements);
@@ -50,10 +53,11 @@ ReductionResult reduceAndMeasureTime(
     float elapsedTimeInMilliseconds;
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
 
-
-
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
+
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(stopEvent);
 
     return ReductionResult{finalResult, elapsedTimeInMilliseconds};
 }

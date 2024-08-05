@@ -15,9 +15,8 @@ const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
 typedef unsigned int (*amountOfBlocksFunction)(const unsigned int dataSize);
 
 ReductionResult reduceAndMeasureTime(
-        unsigned int implementationNumber, reduceImplementationFunction implementation,
-        amountOfBlocksFunction amountOfBlocksFor, int *inputData, unsigned int dataSize,
-        cudaEvent_t startEvent, cudaEvent_t stopEvent
+        reduceImplementationFunction implementation,
+        amountOfBlocksFunction amountOfBlocksFor, int *inputData, unsigned int dataSize
 );
 
 void checkForCUDAErrors();
