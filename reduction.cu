@@ -74,8 +74,8 @@ void initializeTestingDataIn(int *data, int size) {
     fillDataWith1s(data, size);
 }
 
-void fillDataWith1s(int *data, int size) {
-    for (int index = 0; index < size; ++index) {
+void fillDataWith1s(int *data, unsigned int size) {
+    for (unsigned int index = 0; index < size; ++index) {
         data[index] = 1;
     }
 }

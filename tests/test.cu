@@ -4,9 +4,9 @@
 #include "../reduction.cuh"
 
 TEST_SUITE("reduction of arrays with different sizes") {
-    int initializeTestingDataAndGetSum(int *data, int size) {
+    unsigned int initializeTestingDataAndGetSum(int *data, unsigned int size) {
         fillDataWith1s(data, size);
-        int sum = size;
+        unsigned int sum = size;
         return sum;
     }
 

@@ -19,6 +19,6 @@ void checkForCUDAErrors();
 
 void initializeTestingDataIn(int *data, int size);
 
-void fillDataWith1s(int *data, int size);
+void fillDataWith1s(int *data, unsigned int size);
 
 #endif  // REDUCTION
