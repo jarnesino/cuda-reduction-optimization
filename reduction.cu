@@ -47,8 +47,8 @@ ReductionResult reduceAndMeasureTime(
     cudaEventRecord(stopEvent, nullptr);
     cudaEventSynchronize(stopEvent);
 
-    int finalResult;
-    cudaMemcpy(&finalResult, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
+    int value;
+    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
 
     float elapsedTimeInMilliseconds;
     cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
@@ -59,7 +59,7 @@ ReductionResult reduceAndMeasureTime(
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
 
-    return ReductionResult{finalResult, elapsedTimeInMilliseconds};
+    return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
 void checkForCUDAErrors() {
@@ -96,6 +96,10 @@ unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(const uns
 }
 
 void initializeTestingDataIn(int *data, int size) {
+    fillDataWith1s(data, size);
+}
+
+void fillDataWith1s(int *data, int size) {
     for (int index = 0; index < size; ++index) {
         data[index] = 1;
     }

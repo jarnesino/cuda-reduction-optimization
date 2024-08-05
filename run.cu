@@ -10,7 +10,7 @@ https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 void printImplementationData(unsigned int implementationNumber, float elapsedTimeInMilliseconds, int result);
 
 int main() {
-    const unsigned int logDataSize = 30;  // At least one element in the testing data
+    const unsigned int logDataSize = 30;
     const unsigned int dataSize = 1 << logDataSize;
     int *testingData = new int[dataSize];
     initializeTestingDataIn(testingData, dataSize);

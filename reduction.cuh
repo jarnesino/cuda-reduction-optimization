@@ -31,6 +31,8 @@ unsigned int amountOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned 
 
 void initializeTestingDataIn(int *data, int size);
 
+void fillDataWith1s(int *data, int size);
+
 unsigned int unsignedMin(unsigned int a, unsigned int b);
 
 #endif  // REDUCTION
