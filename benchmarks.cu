@@ -13,7 +13,7 @@ void initializeRandomBenchmarkingDataIn(int *data, unsigned int size);
 
 void measureElapsedTimes(unsigned int dataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
 
-void printBenchmarkStats(unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
+void printBenchmarkStats(unsigned int logDataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
 
 void printImplementationData(
         unsigned int implementationNumber,
@@ -23,14 +23,16 @@ void printImplementationData(
 );
 
 int main() {
-    const unsigned int SAMPLE_SIZE = 1;
+    const unsigned int SAMPLE_SIZE = 1;  // TODO: 5
     float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS + 1] = {};  // Constructor fills array with zeroes.
 
-    const unsigned int logDataSize = 30;
-    const unsigned int dataSize = 1 << logDataSize;
-    measureElapsedTimes(dataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
+    const unsigned int logDataSizes[3] = {10, 20, 30};
+    for (unsigned int logDataSize: logDataSizes) {
+        const unsigned int dataSize = 1 << logDataSize;
 
-    printBenchmarkStats(SAMPLE_SIZE, elapsedTimesInMilliseconds);
+        measureElapsedTimes(dataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
+        printBenchmarkStats(logDataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
+    }
 
     return EXIT_SUCCESS;
 }
@@ -76,7 +78,11 @@ void measureElapsedTimes(
     }
 }
 
-void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds) {
+void printBenchmarkStats(
+        const unsigned int logDataSize, const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds
+) {
+    printf("****************** LOG DATA SIZE: %d ****************** SAMPLE SIZE: %d ******************\n", logDataSize, SAMPLE_SIZE);
+
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
         float timesFaster = elapsedTimesInMilliseconds[0] / elapsedTimesInMilliseconds[implementationIndex];
         float percentageOfTimeSaved = (
@@ -92,6 +98,8 @@ void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *elapsedTimesInMi
                 percentageOfTimeSaved
         );
     }
+
+    printf("*****************************************************************************************\n");
 }
 
 void printImplementationData(
@@ -100,7 +108,7 @@ void printImplementationData(
         float timesFaster,
         float percentageOfTimeSaved
 ) {
-    printf("*** Implementation number: %d", implementationNumber);
+    printf("Implementation %d ->", implementationNumber);
     printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
     printf("\t Times faster than base implementation: %f", timesFaster);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
