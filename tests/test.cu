@@ -2,6 +2,7 @@
 
 #include "doctest.h"
 #include "../reduction.cuh"
+#include "../thrust_reduction.cuh"
 #include <random>
 
 TEST_SUITE("reduction of arrays with different sizes") {
@@ -23,9 +24,11 @@ TEST_SUITE("reduction of arrays with different sizes") {
             ReductionResult reductionResult = reduceAndMeasureTime(
                     reduceImplementation, testingData, dataSize
             );
-
             CHECK_EQ(reductionResult.value, expectedSum);
         }
+
+        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
+        CHECK_EQ(reductionResultForThrust.value, expectedSum);
     }
 
     TEST_CASE("reduce small arrays") {
@@ -72,6 +75,9 @@ TEST_SUITE("reduction of arrays with random data") {
 
             CHECK_EQ(reductionResult.value, expectedSum);
         }
+
+        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
+        CHECK_EQ(reductionResultForThrust.value, expectedSum);
     }
 }
 

@@ -23,8 +23,5 @@ ReductionResult reduceAndMeasureTimeWithThrust(int *inputData, unsigned int size
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
 
-    int value;
-    cudaMemcpy(&value, &sum, sizeof(int), cudaMemcpyHostToDevice);
-
-    return ReductionResult{value, elapsedTimeInMilliseconds};
+    return ReductionResult{sum, elapsedTimeInMilliseconds};
 }
