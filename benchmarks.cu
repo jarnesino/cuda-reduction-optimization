@@ -23,7 +23,7 @@ void printImplementationData(
 );
 
 int main() {
-    const unsigned int SAMPLE_SIZE = 1;  // TODO: 5
+    const unsigned int SAMPLE_SIZE = 5;
     float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS + 1] = {};  // Constructor fills array with zeroes.
 
     const unsigned int logDataSizes[3] = {10, 20, 30};
