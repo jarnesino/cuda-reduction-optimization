@@ -11,9 +11,9 @@ https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 
 void initializeRandomBenchmarkingDataIn(int *data, unsigned int size);
 
-void measureAndSumElapsedTimes(unsigned int dataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
+void measureElapsedTimes(unsigned int dataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
 
-void printBenchmarkStats(unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds);
+void printBenchmarkStats(unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
 
 void printImplementationData(
         unsigned int implementationNumber,
@@ -23,14 +23,14 @@ void printImplementationData(
 );
 
 int main() {
+    const unsigned int SAMPLE_SIZE = 1;
+    float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS + 1] = {};  // Constructor fills array with zeroes.
+
     const unsigned int logDataSize = 30;
     const unsigned int dataSize = 1 << logDataSize;
+    measureElapsedTimes(dataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
 
-    const unsigned int SAMPLE_SIZE = 5;
-    float sumOfElapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS + 1] = {};  // Constructor fills array with zeroes.
-
-    measureAndSumElapsedTimes(dataSize, SAMPLE_SIZE, sumOfElapsedTimesInMilliseconds);
-    printBenchmarkStats(SAMPLE_SIZE, sumOfElapsedTimesInMilliseconds);
+    printBenchmarkStats(SAMPLE_SIZE, elapsedTimesInMilliseconds);
 
     return EXIT_SUCCESS;
 }
@@ -48,7 +48,7 @@ void initializeRandomBenchmarkingDataIn(int *data, unsigned int size) {
     }
 }
 
-void measureAndSumElapsedTimes(
+void measureElapsedTimes(
         const unsigned int dataSize, const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds
 ) {
     int *testingData = new int[dataSize];
@@ -70,22 +70,24 @@ void measureAndSumElapsedTimes(
         elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] += reductionResultForThrust.elapsedMilliseconds;
         printf("Completed sample %d for thrust implementation\n", sampleNumber);
     }
+
+    for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
+        elapsedTimesInMilliseconds[implementationIndex] /= (float) SAMPLE_SIZE;
+    }
 }
 
-void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *sumOfElapsedTimesInMilliseconds) {
+void printBenchmarkStats(const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds) {
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
-        sumOfElapsedTimesInMilliseconds[implementationIndex] /= (float) SAMPLE_SIZE;
-
-        float timesFaster = sumOfElapsedTimesInMilliseconds[0] / sumOfElapsedTimesInMilliseconds[implementationIndex];
+        float timesFaster = elapsedTimesInMilliseconds[0] / elapsedTimesInMilliseconds[implementationIndex];
         float percentageOfTimeSaved = (
                 100.0f
-                * (sumOfElapsedTimesInMilliseconds[0] - sumOfElapsedTimesInMilliseconds[implementationIndex])
-                / sumOfElapsedTimesInMilliseconds[0]
+                * (elapsedTimesInMilliseconds[0] - elapsedTimesInMilliseconds[implementationIndex])
+                / elapsedTimesInMilliseconds[0]
         );
 
         printImplementationData(
                 implementationIndex,
-                sumOfElapsedTimesInMilliseconds[implementationIndex],
+                elapsedTimesInMilliseconds[implementationIndex],
                 timesFaster,
                 percentageOfTimeSaved
         );
