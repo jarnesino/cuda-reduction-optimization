@@ -3,6 +3,8 @@
 
 #include <cuda_runtime.h>
 
+const unsigned int NUMBER_OF_IMPLEMENTATIONS = 9;
+
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
 
@@ -61,8 +63,6 @@ unsigned int numberOfBlocksForReductionWithExtraStep(unsigned int dataSize);
 unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
-
-const unsigned int NUMBER_OF_IMPLEMENTATIONS = 9;
 
 extern ReduceImplementation reduceImplementations[NUMBER_OF_IMPLEMENTATIONS];
 
