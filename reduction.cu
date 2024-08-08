@@ -20,8 +20,10 @@ ReductionResult reduceAndMeasureTime(
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **) &deviceInputData, dataSizeInBytes);
-    cudaMalloc((void **) &deviceOutputData,
-               numberOfBlocks * sizeof(int) * 2);  // Allocate double the memory for use in subsequent layers.
+    cudaMalloc(
+            (void **) &deviceOutputData,
+            numberOfBlocks * sizeof(int) * 2
+    );  // Allocate double the memory for use in subsequent layers.
     cudaMemcpy(deviceInputData, inputData, dataSizeInBytes, cudaMemcpyHostToDevice);
     const size_t sharedMemSize = BLOCK_SIZE * sizeof(int);
 
