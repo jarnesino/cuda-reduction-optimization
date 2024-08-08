@@ -24,7 +24,7 @@ __global__ void first_add_during_load_with_loop_overhead(
         __syncthreads();
     }
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 

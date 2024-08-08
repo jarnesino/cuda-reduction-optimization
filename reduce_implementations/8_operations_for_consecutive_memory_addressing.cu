@@ -41,7 +41,7 @@ __global__ void operations_for_consecutive_memory_addressing(
     }
     if (threadBlockIndex < 32) warpReduce<BLOCK_SIZE>(sharedData, threadBlockIndex);
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 

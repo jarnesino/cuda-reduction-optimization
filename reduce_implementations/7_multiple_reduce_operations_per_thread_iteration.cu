@@ -39,7 +39,7 @@ __global__ void multiple_reduce_operations_per_thread_iteration(
     }
     if (threadBlockIndex < 32) warpReduce<BLOCK_SIZE>(sharedData, threadBlockIndex);
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 

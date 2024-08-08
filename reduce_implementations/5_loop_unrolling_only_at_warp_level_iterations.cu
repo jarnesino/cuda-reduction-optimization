@@ -27,7 +27,7 @@ __global__ void loop_unrolling_only_at_warp_level_iterations(
     }
     if (threadBlockIndex < 32) warpReduce(sharedData, threadBlockIndex);
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 

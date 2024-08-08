@@ -17,7 +17,7 @@ __global__ void interleaved_addressing_with_local_memory(
         __syncthreads();
     }
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = inputData[threadIndex];
 }
 

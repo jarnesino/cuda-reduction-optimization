@@ -26,7 +26,7 @@ __global__ void sequential_addressing_with_idle_threads(
         __syncthreads();
     }
 
-    // Write this block's result in shared memory.
+    // Write this block's result.
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
