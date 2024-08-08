@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
+__global__ void first_add_during_load_with_loop_overhead(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];

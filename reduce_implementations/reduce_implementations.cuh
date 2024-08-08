@@ -20,39 +20,39 @@ struct ReduceImplementationKernel {
 
 unsigned int unsignedMin(unsigned int a, unsigned int b);
 
-__global__ void reduce_using_0_interleaved_addressing_with_local_memory(
+__global__ void interleaved_addressing_with_local_memory(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_1_interleaved_addressing_with_divergent_branching(
+__global__ void interleaved_addressing_with_divergent_branching(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(
+__global__ void interleaved_addressing_with_bank_conflicts(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_3_sequential_addressing_with_idle_threads(
+__global__ void sequential_addressing_with_idle_threads(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_4_first_add_during_load_with_loop_overhead(
+__global__ void first_add_during_load_with_loop_overhead(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_5_loop_unrolling_only_at_warp_level_iterations(
+__global__ void loop_unrolling_only_at_warp_level_iterations(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(
+__global__ void complete_loop_unrolling_with_one_reduction(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_7_multiple_reduce_operations_per_thread_iteration(
+__global__ void multiple_reduce_operations_per_thread_iteration(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
-__global__ void reduce_using_8_operations_for_consecutive_memory_addressing(
+__global__ void operations_for_consecutive_memory_addressing(
         int *inputData, int *outputData, unsigned int dataSize
 );
 

@@ -3,7 +3,7 @@
 template<unsigned int blockSize>
 __device__ void warpReduce(volatile int *sharedData, unsigned int threadBlockIndex);
 
-__global__ void reduce_using_6_complete_loop_unrolling_with_one_reduction(
+__global__ void complete_loop_unrolling_with_one_reduction(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];

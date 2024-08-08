@@ -3,7 +3,7 @@
 template<unsigned int blockSize>
 __device__ void warpReduce(volatile int *data, unsigned int threadBlockIndex);
 
-__global__ void reduce_using_8_operations_for_consecutive_memory_addressing(
+__global__ void operations_for_consecutive_memory_addressing(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];

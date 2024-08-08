@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__global__ void reduce_using_3_sequential_addressing_with_idle_threads(
+__global__ void sequential_addressing_with_idle_threads(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];

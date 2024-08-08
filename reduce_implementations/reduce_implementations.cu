@@ -29,13 +29,13 @@ unsigned int unsignedMin(unsigned int a, unsigned int b) {
 }
 
 ReduceImplementationKernel reduceImplementations[9] = {
-    {0, reduce_using_0_interleaved_addressing_with_local_memory, numberOfBlocksForStandardReduction},
-    {1, reduce_using_1_interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction},
-    {2, reduce_using_2_interleaved_addressing_with_bank_conflicts, numberOfBlocksForStandardReduction},
-    {3, reduce_using_3_sequential_addressing_with_idle_threads, numberOfBlocksForStandardReduction},
-    {4, reduce_using_4_first_add_during_load_with_loop_overhead, numberOfBlocksForReductionWithExtraStep},
-    {5, reduce_using_5_loop_unrolling_only_at_warp_level_iterations, numberOfBlocksForReductionWithExtraStep},
-    {6, reduce_using_6_complete_loop_unrolling_with_one_reduction, numberOfBlocksForReductionWithExtraStep},
-    {7, reduce_using_7_multiple_reduce_operations_per_thread_iteration, numberOfBlocksForReductionWithMultipleSteps},
-    {8, reduce_using_8_operations_for_consecutive_memory_addressing, numberOfBlocksForReductionWithConsecutiveMemoryAddressing}
+    {1, interleaved_addressing_with_local_memory, numberOfBlocksForStandardReduction},
+    {2, interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction},
+    {3, interleaved_addressing_with_bank_conflicts, numberOfBlocksForStandardReduction},
+    {4, sequential_addressing_with_idle_threads, numberOfBlocksForStandardReduction},
+    {5, first_add_during_load_with_loop_overhead, numberOfBlocksForReductionWithExtraStep},
+    {6, loop_unrolling_only_at_warp_level_iterations, numberOfBlocksForReductionWithExtraStep},
+    {7, complete_loop_unrolling_with_one_reduction, numberOfBlocksForReductionWithExtraStep},
+    {8, multiple_reduce_operations_per_thread_iteration, numberOfBlocksForReductionWithMultipleSteps},
+    {9, operations_for_consecutive_memory_addressing, numberOfBlocksForReductionWithConsecutiveMemoryAddressing}
 };

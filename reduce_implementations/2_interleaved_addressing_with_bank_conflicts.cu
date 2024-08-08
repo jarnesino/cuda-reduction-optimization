@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__global__ void reduce_using_2_interleaved_addressing_with_bank_conflicts(
+__global__ void interleaved_addressing_with_bank_conflicts(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];

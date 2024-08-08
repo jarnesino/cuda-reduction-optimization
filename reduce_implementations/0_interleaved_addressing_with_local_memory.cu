@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__global__ void reduce_using_0_interleaved_addressing_with_local_memory(
+__global__ void interleaved_addressing_with_local_memory(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     unsigned int blockSize = blockDim.x;
