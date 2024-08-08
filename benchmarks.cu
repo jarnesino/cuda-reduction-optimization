@@ -92,7 +92,7 @@ void printBenchmarkStats(
         );
 
         printImplementationData(
-                implementationIndex,
+                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ? reduceImplementations[implementationIndex].number : implementationIndex + 1,
                 elapsedTimesInMilliseconds[implementationIndex],
                 timesFaster,
                 percentageOfTimeSaved

@@ -39,6 +39,9 @@ ReductionResult reduceAndMeasureTime(
             reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
 
+    int value;
+    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
+
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
     cudaEventSynchronize(stopEvent);
@@ -49,9 +52,6 @@ ReductionResult reduceAndMeasureTime(
     // Destroy the CUDA events for timing.
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
-
-    int value;
-    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
 
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
