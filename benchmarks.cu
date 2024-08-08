@@ -81,7 +81,10 @@ void measureElapsedTimes(
 void printBenchmarkStats(
         const unsigned int logDataSize, const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds
 ) {
-    printf("****************** LOG DATA SIZE: %d ****************** SAMPLE SIZE: %d ******************\n", logDataSize, SAMPLE_SIZE);
+    printf(
+            "****************** LOG DATA SIZE: %d ****************** SAMPLE SIZE: %d ******************\n",
+            logDataSize, SAMPLE_SIZE
+    );
 
     for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
         float timesFaster = elapsedTimesInMilliseconds[0] / elapsedTimesInMilliseconds[implementationIndex];
@@ -90,9 +93,13 @@ void printBenchmarkStats(
                 * (elapsedTimesInMilliseconds[0] - elapsedTimesInMilliseconds[implementationIndex])
                 / elapsedTimesInMilliseconds[0]
         );
+        int implementationNumber =
+                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
+                reduceImplementations[implementationIndex].number :
+                implementationIndex + 1;
 
         printImplementationData(
-                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ? reduceImplementations[implementationIndex].number : implementationIndex + 1,
+                implementationNumber,
                 elapsedTimesInMilliseconds[implementationIndex],
                 timesFaster,
                 percentageOfTimeSaved
