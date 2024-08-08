@@ -14,6 +14,12 @@ ReductionResult reduceAndMeasureTime(
         int *inputData,
         const unsigned int dataSize
 ) {
+    /*
+     * The comparison with CUDA Thrust are made without measuring the time taken for allocating memory for the custom
+     * implementation's data. This is because a practical application of algorithms like this might as well allocate the
+     * memory once, and reuse that memory for multiple runs of the algorithm. This is an advantage over Thrust's method.
+     */
+
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
     unsigned int numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
