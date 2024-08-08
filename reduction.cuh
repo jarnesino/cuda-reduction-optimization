@@ -12,7 +12,7 @@ struct ReductionResult {
 typedef unsigned int (*numberOfBlocksFunction)(const unsigned int dataSize);
 
 ReductionResult reduceAndMeasureTime(
-        ReduceImplementation reduceImplementation, int *inputData, unsigned int dataSize
+        ReduceImplementationKernel reduceImplementation, int *inputData, unsigned int dataSize
 );
 
 void checkForCUDAErrors();

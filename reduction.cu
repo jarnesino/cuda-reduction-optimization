@@ -1,7 +1,7 @@
 #include "reduction.cuh"
 
 int reduce(
-        const ReduceImplementation &reduceImplementation,
+        const ReduceImplementationKernel &reduceImplementation,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
         size_t sharedMemSize,
@@ -10,7 +10,7 @@ int reduce(
 );
 
 ReductionResult reduceAndMeasureTime(
-        ReduceImplementation reduceImplementation,
+        ReduceImplementationKernel reduceImplementation,
         int *inputData,
         const unsigned int dataSize
 ) {
@@ -57,7 +57,7 @@ ReductionResult reduceAndMeasureTime(
 }
 
 int reduce(
-        const ReduceImplementation &reduceImplementation,
+        const ReduceImplementationKernel &reduceImplementation,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
         const size_t sharedMemSize,

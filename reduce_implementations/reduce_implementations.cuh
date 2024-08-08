@@ -12,7 +12,7 @@ typedef void (*reduceImplementationFunction)(int *inputData, int *outputData, un
 
 typedef unsigned int (*numberOfBlocksFunction)(unsigned int dataSize);
 
-struct ReduceImplementation {
+struct ReduceImplementationKernel {
     const int number;
     reduceImplementationFunction function;
     numberOfBlocksFunction numberOfBlocksFunction;
@@ -64,6 +64,6 @@ unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-extern ReduceImplementation reduceImplementations[NUMBER_OF_IMPLEMENTATIONS];
+extern ReduceImplementationKernel reduceImplementations[NUMBER_OF_IMPLEMENTATIONS];
 
 #endif  // REDUCE_IMPLEMENTATIONS
