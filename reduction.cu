@@ -1,6 +1,6 @@
 #include "reduction.cuh"
 
-int *reduce(
+int reduce(
         const ReduceImplementation &reduceImplementation,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
@@ -35,12 +35,9 @@ ReductionResult reduceAndMeasureTime(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
-    inputPointer = reduce(
+    int value = reduce(
             reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
-
-    int value;
-    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
@@ -59,7 +56,7 @@ ReductionResult reduceAndMeasureTime(
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-int *reduce(
+int reduce(
         const ReduceImplementation &reduceImplementation,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
@@ -81,7 +78,9 @@ int *reduce(
         outputPointer += remainingElements;
     }
 
-    return inputPointer;
+    int value;
+    cudaMemcpy(&value, inputPointer, sizeof(int), cudaMemcpyDeviceToHost);
+    return value;
 }
 
 void checkForCUDAErrors() {
