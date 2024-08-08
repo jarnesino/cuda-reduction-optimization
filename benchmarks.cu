@@ -1,6 +1,7 @@
 #include "reduction.cuh"
 #include "thrust_reduction.cuh"
 #include <random>
+#include <string>
 
 /*
 
@@ -17,6 +18,7 @@ void printBenchmarkStats(unsigned int logDataSize, unsigned int SAMPLE_SIZE, flo
 
 void printImplementationData(
         unsigned int implementationNumber,
+        std::string implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved
@@ -97,9 +99,14 @@ void printBenchmarkStats(
                 implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
                 reduceImplementations[implementationIndex].number :
                 implementationIndex + 1;
+        std::string implementationName =
+                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
+                reduceImplementations[implementationIndex].name :
+                "CUDA Thrust";
 
         printImplementationData(
                 implementationNumber,
+                implementationName,
                 elapsedTimesInMilliseconds[implementationIndex],
                 timesFaster,
                 percentageOfTimeSaved
@@ -111,11 +118,13 @@ void printBenchmarkStats(
 
 void printImplementationData(
         const unsigned int implementationNumber,
+        std::string implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved
 ) {
-    printf("Implementation %d ->", implementationNumber);
+    printf("Implementation: %d - ", implementationNumber);
+    std::cout << implementationName << " ->";
     printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
     printf("\t Times faster than base implementation: %f", timesFaster);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);

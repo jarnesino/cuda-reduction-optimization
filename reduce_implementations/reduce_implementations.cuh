@@ -1,6 +1,7 @@
 #ifndef REDUCE_IMPLEMENTATIONS
 #define REDUCE_IMPLEMENTATIONS
 
+#include <string>
 #include <cuda_runtime.h>
 
 const unsigned int NUMBER_OF_IMPLEMENTATIONS = 9;
@@ -14,6 +15,7 @@ typedef unsigned int (*numberOfBlocksFunction)(unsigned int dataSize);
 
 struct ReduceImplementationKernel {
     const int number;
+    std::string name;
     reduceImplementationFunction function;
     numberOfBlocksFunction numberOfBlocksFunction;
 };
