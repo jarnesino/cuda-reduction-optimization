@@ -1,6 +1,6 @@
 #include "reduce_implementations.cuh"
 
-__inline__ __device__ int warpReduceSum(int val);
+__inline__ __device__ int warpReduce(int val);
 
 __global__ void shuffle_down(
         int *inputData, int *outputData, unsigned int dataSize
@@ -46,7 +46,7 @@ __global__ void shuffle_down(
 
     if (threadBlockIndex < 32) {
         int sum = sharedData[threadBlockIndex];
-        sum = warpReduceSum(sum);  // Reduce last warp
+        sum = warpReduce(sum);  // Reduce last warp
         if (threadBlockIndex == 0) {
 
             outputData[blockIndex] = sum;  // Write this block's result.
@@ -54,7 +54,7 @@ __global__ void shuffle_down(
     }
 }
 
-__inline__ __device__ int warpReduceSum(int val) {
+__inline__ __device__ int warpReduce(int val) {
     for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
         val += __shfl_down_sync(0xFFFFFFFF, val, offset);
     return val;
