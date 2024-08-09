@@ -47,10 +47,7 @@ __global__ void shuffle_down(
     if (threadBlockIndex < 32) {
         int sum = sharedData[threadBlockIndex];
         sum = warpReduce(sum);  // Reduce last warp
-        if (threadBlockIndex == 0) {
-
-            outputData[blockIndex] = sum;  // Write this block's result.
-        }
+        if (threadBlockIndex == 0) outputData[blockIndex] = sum;  // Write this block's result.
     }
 }
 
