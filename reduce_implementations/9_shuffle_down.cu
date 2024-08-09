@@ -59,3 +59,10 @@ __inline__ __device__ int warpReduceSum(int val) {
         val += __shfl_down_sync(0xFFFFFFFF, val, offset);
     return val;
 }
+
+/*
+
+The shuffle operations take advantage of threads between a warp being able to share registers.
+Based on: https://developer.nvidia.com/blog/faster-parallel-reductions-kepler/
+
+*/

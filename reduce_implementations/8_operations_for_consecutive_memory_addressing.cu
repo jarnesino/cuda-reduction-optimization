@@ -55,3 +55,11 @@ __device__ void warpReduce(volatile int *data, unsigned int threadBlockIndex) {
     if (blockSize >= 4) data[threadBlockIndex] += data[threadBlockIndex + 2];
     if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
+
+/*
+
+This operates over four consecutive memory addresses with operations that are optimized for such usage.
+However, memory is still slower than registers. What if we could access other thread's registers instead of shared
+memory?
+
+*/
