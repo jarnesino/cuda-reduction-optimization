@@ -4,7 +4,7 @@
 #include <string>
 #include <cuda_runtime.h>
 
-const unsigned int NUMBER_OF_IMPLEMENTATIONS = 9;
+const unsigned int NUMBER_OF_IMPLEMENTATIONS = 10;
 
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
@@ -55,6 +55,10 @@ __global__ void multiple_reduce_operations_per_thread_iteration(
 );
 
 __global__ void operations_for_consecutive_memory_addressing(
+        int *inputData, int *outputData, unsigned int dataSize
+);
+
+__global__ void shuffle_down(
         int *inputData, int *outputData, unsigned int dataSize
 );
 
