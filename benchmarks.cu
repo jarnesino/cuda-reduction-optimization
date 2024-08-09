@@ -18,7 +18,7 @@ void printBenchmarkStats(unsigned int logDataSize, unsigned int SAMPLE_SIZE, flo
 
 void printImplementationData(
         unsigned int implementationNumber,
-        std::string implementationName,
+        const std::string& implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved
@@ -118,7 +118,7 @@ void printBenchmarkStats(
 
 void printImplementationData(
         const unsigned int implementationNumber,
-        std::string implementationName,
+        const std::string& implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved
