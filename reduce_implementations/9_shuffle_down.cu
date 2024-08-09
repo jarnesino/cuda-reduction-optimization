@@ -56,7 +56,7 @@ __global__ void shuffle_down(
 
 __inline__ __device__ int warpReduce(int val) {
     for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
-        val += __shfl_down_sync(0xFFFFFFFF, val, offset);
+        val += __shfl_down_sync(0xFFFFFFFF, val, offset);  // Shuffle from the other thread's sum variable register.
     return val;
 }
 
