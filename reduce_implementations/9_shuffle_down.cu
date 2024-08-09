@@ -63,6 +63,8 @@ __inline__ __device__ int warpReduce(int val) {
 /*
 
 The shuffle operations take advantage of threads between a warp being able to share registers.
-Based on: https://developer.nvidia.com/blog/faster-parallel-reductions-kepler/
+Based on:
+    https://developer.nvidia.com/blog/faster-parallel-reductions-kepler/
+    https://github.com/NVIDIA-developer-blog/code-samples/tree/52b16fac9a135ca12b6c4d53529128d2672cc6ad/posts/parallel_reduction_with_shfl
 
 */
