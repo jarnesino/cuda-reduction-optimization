@@ -1,5 +1,5 @@
-#ifndef CUSTOM_REDUCE_IMPLEMENTATIONS
-#define CUSTOM_REDUCE_IMPLEMENTATIONS
+#ifndef REDUCE_KERNELS
+#define REDUCE_KERNELS
 
 #include <string>
 #include <cuda_runtime.h>
@@ -9,14 +9,14 @@ const unsigned int NUMBER_OF_IMPLEMENTATIONS = 10;
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
 
-typedef void (*reduceImplementationFunction)(int *inputData, int *outputData, unsigned int dataSize);
+typedef void (*reduceKernelFunction)(int *inputData, int *outputData, unsigned int dataSize);
 
 typedef unsigned int (*numberOfBlocksFunction)(unsigned int dataSize);
 
 struct ReduceImplementationKernel {
     const int number;
     std::string name;
-    reduceImplementationFunction function;
+    reduceKernelFunction function;
     numberOfBlocksFunction numberOfBlocksFunction;
 };
 
@@ -72,4 +72,4 @@ unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned 
 
 extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_IMPLEMENTATIONS];
 
-#endif  // CUSTOM_REDUCE_IMPLEMENTATIONS
+#endif  // REDUCE_KERNELS

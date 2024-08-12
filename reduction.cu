@@ -1,6 +1,6 @@
 #include "reduction.cuh"
 
-int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceImplementation, int *inputData, unsigned int dataSize);
+int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize);
 
 int reduceWithKernel(
         const ReduceImplementationKernel &reduceImplementationKernel,
@@ -12,7 +12,7 @@ int reduceWithKernel(
 );
 
 ReductionResult reduceAndMeasureTime(
-        const ReduceImplementationKernel &reduceImplementation,
+        const ReduceImplementationKernel &reduceKernel,
         int *inputData,
         const unsigned int dataSize
 ) {
@@ -23,7 +23,7 @@ ReductionResult reduceAndMeasureTime(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
-    int value = reduceWithCustomImplementation(reduceImplementation, inputData, dataSize);
+    int value = reduceWithCustomImplementation(reduceKernel, inputData, dataSize);
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
@@ -39,10 +39,10 @@ ReductionResult reduceAndMeasureTime(
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceImplementation, int *inputData, unsigned int dataSize) {
+int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize) {
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
-    unsigned int numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
+    unsigned int numberOfBlocks = reduceKernel.numberOfBlocksFunction(remainingElements);
 
     int *deviceInputData, *deviceOutputData;
     cudaMalloc((void **) &deviceInputData, dataSizeInBytes);
@@ -57,7 +57,7 @@ int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceImple
     int *outputPointer = deviceOutputData;
 
     int value = reduceWithKernel(
-            reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
+            reduceKernel, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
 
     cudaFree(deviceInputData);

@@ -2,7 +2,7 @@
 #define REDUCTION
 
 #include <iostream>
-#include "reduce_implementations/custom_reduce_implementations.cuh"
+#include "reduce_implementations/reduce_kernels.cuh"
 
 struct ReductionResult {
     int value;
@@ -12,7 +12,7 @@ struct ReductionResult {
 typedef unsigned int (*numberOfBlocksFunction)(const unsigned int dataSize);
 
 ReductionResult reduceAndMeasureTime(
-        const ReduceImplementationKernel& reduceImplementation, int *inputData, unsigned int dataSize
+        const ReduceImplementationKernel& reduceKernel, int *inputData, unsigned int dataSize
 );
 
 void checkForCUDAErrors();

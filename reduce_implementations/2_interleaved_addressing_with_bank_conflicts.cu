@@ -1,4 +1,4 @@
-#include "custom_reduce_implementations.cuh"
+#include "reduce_kernels.cuh"
 
 __global__ void interleaved_addressing_with_bank_conflicts(
         int *inputData, int *outputData, unsigned int dataSize
