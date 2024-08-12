@@ -70,6 +70,6 @@ unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-extern ReduceImplementationKernel reduceImplementations[NUMBER_OF_IMPLEMENTATIONS];
+extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_IMPLEMENTATIONS];
 
 #endif  // REDUCE_IMPLEMENTATIONS

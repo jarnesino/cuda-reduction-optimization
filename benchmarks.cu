@@ -50,7 +50,7 @@ void measureElapsedTimes(
 
         for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
-                    reduceImplementations[implementationIndex], testingData, dataSize
+                    reduceImplementationKernels[implementationIndex], testingData, dataSize
             );
             elapsedTimesInMilliseconds[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
 
@@ -84,11 +84,11 @@ void printBenchmarkStats(
         );
         int implementationNumber =
                 implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
-                reduceImplementations[implementationIndex].number :
+                reduceImplementationKernels[implementationIndex].number :
                 implementationIndex + 1;
         std::string implementationName =
                 implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
-                reduceImplementations[implementationIndex].name :
+                reduceImplementationKernels[implementationIndex].name :
                 "CUDA Thrust";
 
         printImplementationData(

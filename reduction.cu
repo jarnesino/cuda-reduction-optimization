@@ -1,7 +1,7 @@
 #include "reduction.cuh"
 
-int reduce(
-        const ReduceImplementationKernel &reduceImplementation,
+int reduceWithKernel(
+        const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
         size_t sharedMemSize,
@@ -37,7 +37,7 @@ ReductionResult reduceAndMeasureTime(
     int *inputPointer = deviceInputData;
     int *outputPointer = deviceOutputData;
 
-    int value = reduce(
+    int value = reduceWithKernel(
             reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
 
@@ -58,8 +58,8 @@ ReductionResult reduceAndMeasureTime(
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-int reduce(
-        const ReduceImplementationKernel &reduceImplementation,
+int reduceWithKernel(
+        const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
         const size_t sharedMemSize,
@@ -68,8 +68,8 @@ int reduce(
 ) {
     // Launch kernel for each block.
     while (remainingElements > 1) {
-        numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
-        reduceImplementation.function<<<numberOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
+        numberOfBlocks = reduceImplementationKernel.numberOfBlocksFunction(remainingElements);
+        reduceImplementationKernel.function<<<numberOfBlocks, BLOCK_SIZE, sharedMemSize>>>(
                 inputPointer, outputPointer, remainingElements
         );
         cudaDeviceSynchronize();

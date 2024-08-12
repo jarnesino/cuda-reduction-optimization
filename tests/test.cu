@@ -21,7 +21,7 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
-        for (const auto &reduceImplementation: reduceImplementations) {
+        for (const auto &reduceImplementation: reduceImplementationKernels) {
             ReductionResult reductionResult = reduceAndMeasureTime(
                     reduceImplementation, testingData, dataSize
             );
@@ -55,7 +55,7 @@ TEST_SUITE("reduction of arrays with random data") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
-        for (const auto &reduceImplementation: reduceImplementations) {
+        for (const auto &reduceImplementation: reduceImplementationKernels) {
             ReductionResult reductionResult = reduceAndMeasureTime(
                     reduceImplementation, testingData, dataSize
             );
