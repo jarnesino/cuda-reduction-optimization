@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include "doctest.h"
+#include "../data.cuh"
 #include "../reduction.cuh"
 #include "../thrust_reduction.cuh"
 #include <random>
@@ -48,25 +49,11 @@ TEST_SUITE("reduction of arrays with different sizes") {
 }
 
 TEST_SUITE("reduction of arrays with random data") {
-    int initializeRandomTestingDataAndGetSum(int *data, unsigned int size) {
-        std::random_device randomSeed;
-        std::mt19937 gen(randomSeed());
-        std::uniform_int_distribution<> uniformDistribution(-2000, 2000);
-
-        int sum = 0;
-        for (unsigned int index = 0; index < size; ++index) {
-            int randomNumber = uniformDistribution(gen);
-            data[index] = randomNumber;
-            sum += randomNumber;
-        }
-        return sum;
-    }
-
     TEST_CASE("reduce arrays with random positive and negative integers") {
         const unsigned int logDataSize = 11;
         const unsigned int dataSize = 1 << logDataSize;
         int *testingData = new int[dataSize];
-        int expectedSum = initializeRandomTestingDataAndGetSum(testingData, dataSize);
+        int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (const auto &reduceImplementation: reduceImplementations) {
             ReductionResult reductionResult = reduceAndMeasureTime(

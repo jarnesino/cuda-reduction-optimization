@@ -3,6 +3,6 @@
 
 #include <random>
 
-void initializeRandomDataIn(int *data, unsigned int size);
+int initializeRandomDataAndGetSumIn(int *data, unsigned int size);
 
 #endif

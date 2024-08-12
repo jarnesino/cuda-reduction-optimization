@@ -46,7 +46,7 @@ void measureElapsedTimes(
 
     for (unsigned int sampleNumber = 1; sampleNumber <= SAMPLE_SIZE; sampleNumber++) {
         printf("Generating data for sample %d\n", sampleNumber);
-        initializeRandomDataIn(testingData, dataSize);
+        initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
