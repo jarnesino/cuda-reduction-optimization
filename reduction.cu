@@ -1,5 +1,7 @@
 #include "reduction.cuh"
 
+int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceImplementation, int *inputData, unsigned int dataSize);
+
 int reduceWithKernel(
         const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
@@ -10,7 +12,7 @@ int reduceWithKernel(
 );
 
 ReductionResult reduceAndMeasureTime(
-        ReduceImplementationKernel reduceImplementation,
+        const ReduceImplementationKernel &reduceImplementation,
         int *inputData,
         const unsigned int dataSize
 ) {
@@ -21,6 +23,23 @@ ReductionResult reduceAndMeasureTime(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
+    int value = reduceWithCustomImplementation(reduceImplementation, inputData, dataSize);
+
+    // Record the CUDA stop event and wait for it to complete.
+    cudaEventRecord(stopEvent, nullptr);
+    cudaEventSynchronize(stopEvent);
+
+    float elapsedTimeInMilliseconds;
+    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
+
+    // Destroy the CUDA events for timing.
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(stopEvent);
+
+    return ReductionResult{value, elapsedTimeInMilliseconds};
+}
+
+int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceImplementation, int *inputData, unsigned int dataSize) {
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
     unsigned int numberOfBlocks = reduceImplementation.numberOfBlocksFunction(remainingElements);
@@ -41,21 +60,10 @@ ReductionResult reduceAndMeasureTime(
             reduceImplementation, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
 
-    // Record the CUDA stop event and wait for it to complete.
-    cudaEventRecord(stopEvent, nullptr);
-    cudaEventSynchronize(stopEvent);
-
-    float elapsedTimeInMilliseconds;
-    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
-
-    // Destroy the CUDA events for timing.
-    cudaEventDestroy(startEvent);
-    cudaEventDestroy(stopEvent);
-
     cudaFree(deviceInputData);
     cudaFree(deviceOutputData);
 
-    return ReductionResult{value, elapsedTimeInMilliseconds};
+    return value;
 }
 
 int reduceWithKernel(
