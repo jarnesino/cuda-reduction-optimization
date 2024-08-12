@@ -3,7 +3,7 @@ CC = nvcc
 BENCHMARKS_TARGET = benchmarks
 REDUCE_IMPLEMENTATIONS_DIRECTORY = reduce_implementations
 REDUCE_IMPLEMENTATIONS = $(wildcard $(REDUCE_IMPLEMENTATIONS_DIRECTORY)/*.cu)
-REDUCTION_FILES = reduction.cu thrust_reduction.cu $(REDUCE_IMPLEMENTATIONS)
+REDUCTION_FILES = reduction.cu thrust_reduction.cu $(REDUCE_IMPLEMENTATIONS) data.cu
 BENCHMARK_FILES = benchmarks.cu $(REDUCTION_FILES)
 
 TEST_TARGET = test
