@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 __global__ void first_add_during_load_with_loop_overhead(
         int *inputData, int *outputData, unsigned int dataSize

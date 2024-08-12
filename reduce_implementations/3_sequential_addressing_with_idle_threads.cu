@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 __global__ void sequential_addressing_with_idle_threads(
         int *inputData, int *outputData, unsigned int dataSize

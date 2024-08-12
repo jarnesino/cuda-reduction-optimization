@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 __inline__ __device__ int warpReduce(int val);
 

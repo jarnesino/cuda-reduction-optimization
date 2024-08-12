@@ -2,7 +2,7 @@
 #define REDUCTION
 
 #include <iostream>
-#include "reduce_implementations/reduce_implementations.cuh"
+#include "reduce_implementations/custom_reduce_implementations.cuh"
 
 struct ReductionResult {
     int value;

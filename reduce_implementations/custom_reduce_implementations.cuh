@@ -1,5 +1,5 @@
-#ifndef REDUCE_IMPLEMENTATIONS
-#define REDUCE_IMPLEMENTATIONS
+#ifndef CUSTOM_REDUCE_IMPLEMENTATIONS
+#define CUSTOM_REDUCE_IMPLEMENTATIONS
 
 #include <string>
 #include <cuda_runtime.h>
@@ -72,4 +72,4 @@ unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned 
 
 extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_IMPLEMENTATIONS];
 
-#endif  // REDUCE_IMPLEMENTATIONS
+#endif  // CUSTOM_REDUCE_IMPLEMENTATIONS

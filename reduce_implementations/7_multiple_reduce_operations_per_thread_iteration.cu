@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 template<unsigned int blockSize>
 __device__ void warpReduce(volatile int *data, unsigned int threadBlockIndex);

@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 unsigned int numberOfBlocksForStandardReduction(const unsigned int dataSize) {
     return (dataSize + BLOCK_SIZE - 1) / BLOCK_SIZE;

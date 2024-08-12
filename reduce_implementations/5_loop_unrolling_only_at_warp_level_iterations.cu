@@ -1,4 +1,4 @@
-#include "reduce_implementations.cuh"
+#include "custom_reduce_implementations.cuh"
 
 __device__ void warpReduce(volatile int *data, unsigned int threadIndex);
 
