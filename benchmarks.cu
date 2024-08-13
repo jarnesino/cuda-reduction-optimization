@@ -31,8 +31,10 @@ void printImplementationData(
         unsigned int implementationNumber,
         const std::string &implementationName,
         float elapsedTimeInMilliseconds,
-        float timesFaster,
-        float percentageOfTimeSaved
+        float timesFasterVsCPU,
+        float percentageOfTimeSavedVsCPU,
+        float timesFasterVsBaseGPU,
+        float percentageOfTimeSavedVsBaseGPU
 );
 
 int main() {
@@ -119,9 +121,20 @@ void printBenchmarkStats(
             logDataSize, SAMPLE_SIZE
     );
 
+    float timesFasterVsCPU;
+    float percentageOfTimeSavedVsCPU;
+    float timesFasterVsBaseGPU;
+    float percentageOfTimeSavedVsBaseGPU;
+
     for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
-        float timesFaster = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForKernels[index];
-        float percentageOfTimeSaved = (
+        timesFasterVsCPU = elapsedTimesInMillisecondsForNonKernels[1] / elapsedTimesInMillisecondsForKernels[index];
+        percentageOfTimeSavedVsCPU = (
+                100.0f
+                * (elapsedTimesInMillisecondsForNonKernels[1] - elapsedTimesInMillisecondsForKernels[index])
+                / elapsedTimesInMillisecondsForNonKernels[1]
+        );
+        timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForKernels[index];
+        percentageOfTimeSavedVsBaseGPU = (
                 100.0f
                 * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForKernels[index])
                 / elapsedTimesInMillisecondsForKernels[0]
@@ -131,13 +144,21 @@ void printBenchmarkStats(
                 reduceImplementationKernels[index].number,
                 reduceImplementationKernels[index].name,
                 elapsedTimesInMillisecondsForKernels[index],
-                timesFaster,
-                percentageOfTimeSaved
+                timesFasterVsCPU,
+                percentageOfTimeSavedVsCPU,
+                timesFasterVsBaseGPU,
+                percentageOfTimeSavedVsBaseGPU
         );
     }
 
-    float timesFasterThrust = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[0];
-    float percentageOfTimeSavedThrust = (
+    timesFasterVsCPU = elapsedTimesInMillisecondsForNonKernels[1] / elapsedTimesInMillisecondsForNonKernels[0];
+    percentageOfTimeSavedVsCPU = (
+            100.0f
+            * (elapsedTimesInMillisecondsForNonKernels[1] - elapsedTimesInMillisecondsForNonKernels[0])
+            / elapsedTimesInMillisecondsForNonKernels[1]
+    );
+    timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[0];
+    percentageOfTimeSavedVsBaseGPU = (
             100.0f
             * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[0])
             / elapsedTimesInMillisecondsForKernels[0]
@@ -147,12 +168,16 @@ void printBenchmarkStats(
             NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1,
             "CUDA Thrust",
             elapsedTimesInMillisecondsForNonKernels[0],
-            timesFasterThrust,
-            percentageOfTimeSavedThrust
+            timesFasterVsCPU,
+            percentageOfTimeSavedVsCPU,
+            timesFasterVsBaseGPU,
+            percentageOfTimeSavedVsBaseGPU
     );
 
-    float timesFasterCPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[1];
-    float percentageOfTimeSavedCPU = (
+    timesFasterVsCPU = 1;
+    percentageOfTimeSavedVsCPU = 0;
+    timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[1];
+    percentageOfTimeSavedVsBaseGPU = (
             100.0f
             * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[1])
             / elapsedTimesInMillisecondsForKernels[0]
@@ -162,8 +187,10 @@ void printBenchmarkStats(
             NUMBER_OF_KERNEL_IMPLEMENTATIONS + 2,
             "CPU sequential",
             elapsedTimesInMillisecondsForNonKernels[1],
-            timesFasterCPU,
-            percentageOfTimeSavedCPU
+            timesFasterVsCPU,
+            percentageOfTimeSavedVsCPU,
+            timesFasterVsBaseGPU,
+            percentageOfTimeSavedVsBaseGPU
     );
 
     printf("*****************************************************************************************\n");
@@ -173,12 +200,22 @@ void printImplementationData(
         const unsigned int implementationNumber,
         const std::string &implementationName,
         float elapsedTimeInMilliseconds,
-        float timesFaster,
-        float percentageOfTimeSaved
+        float timesFasterVsCPU,
+        float percentageOfTimeSavedVsCPU,
+        float timesFasterVsBaseGPU,
+        float percentageOfTimeSavedVsBaseGPU
 ) {
     printf("Implementation: %d - ", implementationNumber);
-    std::cout << implementationName << " ->";
-    printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
-    printf("\t Times faster than base implementation: %f", timesFaster);
-    printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
+    std::cout << implementationName << "\n";
+    printf("\t Time: %f ms\n", elapsedTimeInMilliseconds);
+    printf(
+            "\t Against CPU implementation: %f faster | %f%% time saved\n",
+            timesFasterVsCPU,
+            percentageOfTimeSavedVsCPU
+    );
+    printf(
+            "\t Against base GPU implementation: %f faster | %f%% time saved\n",
+            timesFasterVsBaseGPU,
+            percentageOfTimeSavedVsBaseGPU
+    );
 }
