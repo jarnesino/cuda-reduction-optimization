@@ -70,19 +70,29 @@ void measureElapsedTimes(
         printf("Generating data for sample %d\n", sampleNumber);
         initializeRandomDataAndGetSumIn(testingData, dataSize);
 
-        for (int implementationIndex = 0;
-             implementationIndex < NUMBER_OF_KERNEL_IMPLEMENTATIONS; implementationIndex++) {
+        for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
-                    reduceImplementationKernels[implementationIndex], testingData, dataSize
+                    reduceImplementationKernels[index], testingData, dataSize
             );
-            elapsedTimesInMillisecondsForKernels[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
+            elapsedTimesInMillisecondsForKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
 
-            printf("Completed sample %d for implementation %d\n", sampleNumber, implementationIndex);
+            printf(
+                    "Completed sample %d for (kernel) implementation %d\n",
+                    sampleNumber,
+                    reduceImplementationKernels[index].number
+            );
         }
 
-        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
-        elapsedTimesInMillisecondsForNonKernels[0] += reductionResultForThrust.elapsedMilliseconds;
-        printf("Completed sample %d for thrust implementation\n", sampleNumber);
+        for (int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
+            ReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithThrust(testingData, dataSize);
+            elapsedTimesInMillisecondsForNonKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
+
+            printf(
+                    "Completed sample %d for (non-kernel) implementation %d\n",
+                    sampleNumber,
+                    NUMBER_OF_KERNEL_IMPLEMENTATIONS + index + 1
+            );
+        }
     }
 
     for (int implementationIndex = 0;
