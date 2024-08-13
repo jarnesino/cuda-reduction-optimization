@@ -3,8 +3,7 @@
 #include "doctest.h"
 #include "../data.cuh"
 #include "../reduction.cuh"
-#include "../reduce_non_kernel_implementations/thrust_reduction.cuh"
-#include "../reduce_non_kernel_implementations/sequential_cpu_reduction.cuh"
+#include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 #include <random>
 
 TEST_SUITE("reduction of arrays with different sizes") {

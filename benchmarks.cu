@@ -1,7 +1,6 @@
 #include "reduction.cuh"
-#include "reduce_non_kernel_implementations/thrust_reduction.cuh"
-#include "reduce_non_kernel_implementations/sequential_cpu_reduction.cuh"
 #include "data.cuh"
+#include "reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 #include <string>
 
 const unsigned int NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS = 2;

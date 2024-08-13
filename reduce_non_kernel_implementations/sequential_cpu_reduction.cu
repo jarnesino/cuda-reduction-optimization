@@ -1,4 +1,4 @@
-#include "sequential_cpu_reduction.cuh"
+#include "../reduction.cuh"
 
 ReductionResult reduceAndMeasureTimeWithCPU(int *inputData, unsigned int size) {
     // Create CUDA events for timing.
