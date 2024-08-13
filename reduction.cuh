@@ -2,7 +2,7 @@
 #define REDUCTION
 
 #include <iostream>
-#include "reduce_implementations/reduce_kernels.cuh"
+#include "reduce_kernel_implementations/reduce_kernels.cuh"
 
 struct ReductionResult {
     int value;
