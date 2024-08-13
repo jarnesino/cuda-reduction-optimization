@@ -1,6 +1,8 @@
 #include "reduction.cuh"
 
-int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize);
+int reduceWithCustomImplementation(
+        const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
+);
 
 int reduceWithKernel(
         const ReduceImplementationKernel &reduceImplementationKernel,
@@ -39,7 +41,9 @@ ReductionResult reduceAndMeasureTime(
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-int reduceWithCustomImplementation(const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize) {
+int reduceWithCustomImplementation(
+        const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
+) {
     const size_t dataSizeInBytes = dataSize * sizeof(int);
     unsigned int remainingElements = dataSize;
     unsigned int numberOfBlocks = reduceKernel.numberOfBlocksFunction(remainingElements);
