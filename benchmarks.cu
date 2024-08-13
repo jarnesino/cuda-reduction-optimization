@@ -135,7 +135,7 @@ void printBenchmarkStats(
     }
 
     for (int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
-        float timesFaster = elapsedTimesInMillisecondsForNonKernels[0] / elapsedTimesInMillisecondsForKernels[index];
+        float timesFaster = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[index];
         float percentageOfTimeSaved = (
                 100.0f
                 * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[index])

@@ -8,7 +8,7 @@ int reduceWithKernelInDevice(
         const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
-        const size_t sharedMemSize,
+        size_t sharedMemSize,
         int *inputPointer,
         int *outputPointer
 );
