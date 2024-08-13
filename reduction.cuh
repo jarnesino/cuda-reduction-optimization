@@ -9,8 +9,6 @@ struct ReductionResult {
     float elapsedMilliseconds;
 };
 
-typedef unsigned int (*numberOfBlocksFunction)(const unsigned int dataSize);
-
 ReductionResult reduceAndMeasureTime(
         const ReduceImplementationKernel& reduceKernel, int *inputData, unsigned int dataSize
 );
