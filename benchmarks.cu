@@ -1,5 +1,5 @@
 #include "reduction.cuh"
-#include "thrust_reduction.cuh"
+#include "reduce_non_kernel_implementations/thrust_reduction.cuh"
 #include "data.cuh"
 #include <string>
 
