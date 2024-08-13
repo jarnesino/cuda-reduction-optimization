@@ -101,15 +101,11 @@ void measureElapsedTimes(
         );
     }
 
-    for (int implementationIndex = 0;
-         implementationIndex < NUMBER_OF_KERNEL_IMPLEMENTATIONS; implementationIndex++) {
-        elapsedTimesInMillisecondsForKernels[implementationIndex] /= (float) SAMPLE_SIZE;
-    }
+    for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++)
+        elapsedTimesInMillisecondsForKernels[index] /= (float) SAMPLE_SIZE;
 
-    for (int implementationIndex = 0;
-         implementationIndex < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; implementationIndex++) {
-        elapsedTimesInMillisecondsForNonKernels[implementationIndex] /= (float) SAMPLE_SIZE;
-    }
+    for (int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++)
+        elapsedTimesInMillisecondsForNonKernels[index] /= (float) SAMPLE_SIZE;
 }
 
 void printBenchmarkStats(
@@ -150,7 +146,7 @@ void printBenchmarkStats(
     printImplementationData(
             NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1,
             "CUDA Thrust",
-            elapsedTimesInMillisecondsForKernels[0],
+            elapsedTimesInMillisecondsForNonKernels[0],
             timesFasterThrust,
             percentageOfTimeSavedThrust
     );
@@ -165,7 +161,7 @@ void printBenchmarkStats(
     printImplementationData(
             NUMBER_OF_KERNEL_IMPLEMENTATIONS + 2,
             "CPU sequential",
-            elapsedTimesInMillisecondsForKernels[1],
+            elapsedTimesInMillisecondsForNonKernels[1],
             timesFasterCPU,
             percentageOfTimeSavedCPU
     );
@@ -182,7 +178,7 @@ void printImplementationData(
 ) {
     printf("Implementation: %d - ", implementationNumber);
     std::cout << implementationName << " ->";
-    printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);  // TODO: WATCH OUT
+    printf("\t Elapsed time: %f ms", elapsedTimeInMilliseconds);
     printf("\t Times faster than base implementation: %f", timesFaster);
     printf("\t Time saved compared with base implementation: %f %%\n", percentageOfTimeSaved);
 }
