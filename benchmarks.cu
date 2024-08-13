@@ -10,13 +10,25 @@ https://developer.download.nvidia.com/assets/cuda/files/reduction.pdf
 
 */
 
-void measureElapsedTimes(unsigned int dataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
+const unsigned int NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS = 1;
 
-void printBenchmarkStats(unsigned int logDataSize, unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds);
+void measureElapsedTimes(
+        unsigned int dataSize,
+        unsigned int SAMPLE_SIZE,
+        float *elapsedTimesInMillisecondsForKernels,
+        float *elapsedTimesInMillisecondsForNonKernels
+);
+
+void printBenchmarkStats(
+        unsigned int logDataSize,
+        unsigned int SAMPLE_SIZE,
+        const float *elapsedTimesInMillisecondsForKernels,
+        const float *elapsedTimesInMillisecondsForNonKernels
+);
 
 void printImplementationData(
         unsigned int implementationNumber,
-        const std::string& implementationName,
+        const std::string &implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved
@@ -24,14 +36,21 @@ void printImplementationData(
 
 int main() {
     const unsigned int SAMPLE_SIZE = 5;
-    float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS + 1] = {};  // Constructor fills array with zeroes.
+
+    // Constructor fills array with zeroes.
+    float elapsedTimesInMillisecondsForKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1] = {};
+    float elapsedTimesInMillisecondsForNonKernels[1] = {};
 
     const unsigned int logDataSizes[3] = {10, 20, 30};
     for (unsigned int logDataSize: logDataSizes) {
         const unsigned int dataSize = 1 << logDataSize;
 
-        measureElapsedTimes(dataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
-        printBenchmarkStats(logDataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
+        measureElapsedTimes(
+                dataSize, SAMPLE_SIZE, elapsedTimesInMillisecondsForKernels, elapsedTimesInMillisecondsForNonKernels
+        );
+        printBenchmarkStats(
+                logDataSize, SAMPLE_SIZE, elapsedTimesInMillisecondsForKernels, elapsedTimesInMillisecondsForNonKernels
+        );
     }
 
     return EXIT_SUCCESS;
@@ -40,7 +59,10 @@ int main() {
 /* *************** AUXILIARY *************** */
 
 void measureElapsedTimes(
-        const unsigned int dataSize, const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds
+        const unsigned int dataSize,
+        const unsigned int SAMPLE_SIZE,
+        float *elapsedTimesInMillisecondsForKernels,
+        float *elapsedTimesInMillisecondsForNonKernels
 ) {
     int *testingData = new int[dataSize];
 
@@ -48,53 +70,72 @@ void measureElapsedTimes(
         printf("Generating data for sample %d\n", sampleNumber);
         initializeRandomDataAndGetSumIn(testingData, dataSize);
 
-        for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS; implementationIndex++) {
+        for (int implementationIndex = 0;
+             implementationIndex < NUMBER_OF_KERNEL_IMPLEMENTATIONS; implementationIndex++) {
             ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
                     reduceImplementationKernels[implementationIndex], testingData, dataSize
             );
-            elapsedTimesInMilliseconds[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
+            elapsedTimesInMillisecondsForKernels[implementationIndex] += reductionResultForImplementation.elapsedMilliseconds;
 
             printf("Completed sample %d for implementation %d\n", sampleNumber, implementationIndex);
         }
 
         ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
-        elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] += reductionResultForThrust.elapsedMilliseconds;
+        elapsedTimesInMillisecondsForNonKernels[0] += reductionResultForThrust.elapsedMilliseconds;
         printf("Completed sample %d for thrust implementation\n", sampleNumber);
     }
 
-    for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
-        elapsedTimesInMilliseconds[implementationIndex] /= (float) SAMPLE_SIZE;
+    for (int implementationIndex = 0;
+         implementationIndex < NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1; implementationIndex++) {
+        elapsedTimesInMillisecondsForKernels[implementationIndex] /= (float) SAMPLE_SIZE;
+    }
+
+    for (int implementationIndex = 0;
+         implementationIndex < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; implementationIndex++) {
+        elapsedTimesInMillisecondsForNonKernels[implementationIndex] /= (float) SAMPLE_SIZE;
     }
 }
 
 void printBenchmarkStats(
-        const unsigned int logDataSize, const unsigned int SAMPLE_SIZE, float *elapsedTimesInMilliseconds
+        const unsigned int logDataSize,
+        const unsigned int SAMPLE_SIZE,
+        const float *elapsedTimesInMillisecondsForKernels,
+        const float *elapsedTimesInMillisecondsForNonKernels
 ) {
     printf(
             "****************** LOG DATA SIZE: %d ****************** SAMPLE SIZE: %d ******************\n",
             logDataSize, SAMPLE_SIZE
     );
 
-    for (int implementationIndex = 0; implementationIndex < NUMBER_OF_IMPLEMENTATIONS + 1; implementationIndex++) {
-        float timesFaster = elapsedTimesInMilliseconds[0] / elapsedTimesInMilliseconds[implementationIndex];
+    for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
+        float timesFaster = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForKernels[index];
         float percentageOfTimeSaved = (
                 100.0f
-                * (elapsedTimesInMilliseconds[0] - elapsedTimesInMilliseconds[implementationIndex])
-                / elapsedTimesInMilliseconds[0]
+                * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForKernels[index])
+                / elapsedTimesInMillisecondsForKernels[0]
         );
-        int implementationNumber =
-                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
-                reduceImplementationKernels[implementationIndex].number :
-                implementationIndex + 1;
-        std::string implementationName =
-                implementationIndex < NUMBER_OF_IMPLEMENTATIONS ?
-                reduceImplementationKernels[implementationIndex].name :
-                "CUDA Thrust";
 
         printImplementationData(
-                implementationNumber,
-                implementationName,
-                elapsedTimesInMilliseconds[implementationIndex],
+                reduceImplementationKernels[index].number,
+                reduceImplementationKernels[index].name,
+                elapsedTimesInMillisecondsForKernels[index],
+                timesFaster,
+                percentageOfTimeSaved
+        );
+    }
+
+    for (int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
+        float timesFaster = elapsedTimesInMillisecondsForNonKernels[0] / elapsedTimesInMillisecondsForKernels[index];
+        float percentageOfTimeSaved = (
+                100.0f
+                * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[index])
+                / elapsedTimesInMillisecondsForKernels[0]
+        );
+
+        printImplementationData(
+                NUMBER_OF_KERNEL_IMPLEMENTATIONS + index + 1,
+                "CUDA Thrust",
+                elapsedTimesInMillisecondsForKernels[index],
                 timesFaster,
                 percentageOfTimeSaved
         );
@@ -105,7 +146,7 @@ void printBenchmarkStats(
 
 void printImplementationData(
         const unsigned int implementationNumber,
-        const std::string& implementationName,
+        const std::string &implementationName,
         float elapsedTimeInMilliseconds,
         float timesFaster,
         float percentageOfTimeSaved

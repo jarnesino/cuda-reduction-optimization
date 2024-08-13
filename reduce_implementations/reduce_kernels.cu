@@ -28,7 +28,7 @@ unsigned int unsignedMin(unsigned int a, unsigned int b) {
     return a < b ? a : b;
 }
 
-ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_IMPLEMENTATIONS] = {
+ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS] = {
         {1,  "interleaved addressing with local memory",        interleaved_addressing_with_local_memory,        numberOfBlocksForStandardReduction},
         {2,  "interleaved addressing with divergent branching", interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction},
         {3,  "interleaved addressing with bank conflicts",      interleaved_addressing_with_bank_conflicts,      numberOfBlocksForStandardReduction},

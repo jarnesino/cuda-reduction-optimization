@@ -4,7 +4,7 @@
 #include <string>
 #include <cuda_runtime.h>
 
-const unsigned int NUMBER_OF_IMPLEMENTATIONS = 10;
+const unsigned int NUMBER_OF_KERNEL_IMPLEMENTATIONS = 10;
 
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
@@ -70,6 +70,6 @@ unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_IMPLEMENTATIONS];
+extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS];
 
 #endif  // REDUCE_KERNELS
