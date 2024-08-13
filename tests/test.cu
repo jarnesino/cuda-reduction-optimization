@@ -4,6 +4,7 @@
 #include "../data.cuh"
 #include "../reduction.cuh"
 #include "../reduce_non_kernel_implementations/thrust_reduction.cuh"
+#include "../reduce_non_kernel_implementations/sequential_cpu_reduction.cuh"
 #include <random>
 
 TEST_SUITE("reduction of arrays with different sizes") {
@@ -30,6 +31,9 @@ TEST_SUITE("reduction of arrays with different sizes") {
 
         ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
         CHECK_EQ(reductionResultForThrust.value, expectedSum);
+
+        ReductionResult reductionResultForCPU = reduceAndMeasureTimeWithCPU(testingData, dataSize);
+        CHECK_EQ(reductionResultForCPU.value, expectedSum);
     }
 
     TEST_CASE("reduce small arrays") {
@@ -65,6 +69,9 @@ TEST_SUITE("reduction of arrays with random data") {
 
         ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
         CHECK_EQ(reductionResultForThrust.value, expectedSum);
+
+        ReductionResult reductionResultForCPU = reduceAndMeasureTimeWithCPU(testingData, dataSize);
+        CHECK_EQ(reductionResultForCPU.value, expectedSum);
     }
 }
 
