@@ -1,14 +1,14 @@
 #include "reduction.cuh"
 
-int reduceWithCustomImplementation(
+int reduceWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
 );
 
-int reduceWithKernel(
+int reduceWithKernelInDevice(
         const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
-        size_t sharedMemSize,
+        const size_t sharedMemSize,
         int *inputPointer,
         int *outputPointer
 );
@@ -25,7 +25,7 @@ ReductionResult reduceAndMeasureTime(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
-    int value = reduceWithCustomImplementation(reduceKernel, inputData, dataSize);
+    int value = reduceWithKernel(reduceKernel, inputData, dataSize);
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
@@ -41,7 +41,7 @@ ReductionResult reduceAndMeasureTime(
     return ReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-int reduceWithCustomImplementation(
+int reduceWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
 ) {
     const size_t dataSizeInBytes = dataSize * sizeof(int);
@@ -60,7 +60,7 @@ int reduceWithCustomImplementation(
     int *inputPointer = deviceInputData;
     int *outputPointer = deviceOutputData;
 
-    int value = reduceWithKernel(
+    int value = reduceWithKernelInDevice(
             reduceKernel, remainingElements, numberOfBlocks, sharedMemSize, inputPointer, outputPointer
     );
 
@@ -70,7 +70,7 @@ int reduceWithCustomImplementation(
     return value;
 }
 
-int reduceWithKernel(
+int reduceWithKernelInDevice(
         const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
         unsigned int numberOfBlocks,
