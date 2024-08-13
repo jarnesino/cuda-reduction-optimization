@@ -126,18 +126,20 @@ void printBenchmarkStats(
     float timesFasterVsBaseGPU;
     float percentageOfTimeSavedVsBaseGPU;
 
+    const float elapsedTimeForSequentialCPUImplementation = elapsedTimesInMillisecondsForNonKernels[1];
+    const float elapsedTimeForBaseGPUImplementation = elapsedTimesInMillisecondsForKernels[0];
     for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
-        timesFasterVsCPU = elapsedTimesInMillisecondsForNonKernels[1] / elapsedTimesInMillisecondsForKernels[index];
+        timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMillisecondsForKernels[index];
         percentageOfTimeSavedVsCPU = (
                 100.0f
-                * (elapsedTimesInMillisecondsForNonKernels[1] - elapsedTimesInMillisecondsForKernels[index])
-                / elapsedTimesInMillisecondsForNonKernels[1]
+                * (elapsedTimeForSequentialCPUImplementation - elapsedTimesInMillisecondsForKernels[index])
+                / elapsedTimeForSequentialCPUImplementation
         );
-        timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForKernels[index];
+        timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForKernels[index];
         percentageOfTimeSavedVsBaseGPU = (
                 100.0f
-                * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForKernels[index])
-                / elapsedTimesInMillisecondsForKernels[0]
+                * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForKernels[index])
+                / elapsedTimeForBaseGPUImplementation
         );
 
         printImplementationData(
@@ -151,17 +153,17 @@ void printBenchmarkStats(
         );
     }
 
-    timesFasterVsCPU = elapsedTimesInMillisecondsForNonKernels[1] / elapsedTimesInMillisecondsForNonKernels[0];
+    timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMillisecondsForNonKernels[0];
     percentageOfTimeSavedVsCPU = (
             100.0f
-            * (elapsedTimesInMillisecondsForNonKernels[1] - elapsedTimesInMillisecondsForNonKernels[0])
-            / elapsedTimesInMillisecondsForNonKernels[1]
+            * (elapsedTimeForSequentialCPUImplementation - elapsedTimesInMillisecondsForNonKernels[0])
+            / elapsedTimeForSequentialCPUImplementation
     );
-    timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[0];
+    timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForNonKernels[0];
     percentageOfTimeSavedVsBaseGPU = (
             100.0f
-            * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[0])
-            / elapsedTimesInMillisecondsForKernels[0]
+            * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForNonKernels[0])
+            / elapsedTimeForBaseGPUImplementation
     );
 
     printImplementationData(
@@ -176,11 +178,11 @@ void printBenchmarkStats(
 
     timesFasterVsCPU = 1;
     percentageOfTimeSavedVsCPU = 0;
-    timesFasterVsBaseGPU = elapsedTimesInMillisecondsForKernels[0] / elapsedTimesInMillisecondsForNonKernels[1];
+    timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForNonKernels[1];
     percentageOfTimeSavedVsBaseGPU = (
             100.0f
-            * (elapsedTimesInMillisecondsForKernels[0] - elapsedTimesInMillisecondsForNonKernels[1])
-            / elapsedTimesInMillisecondsForKernels[0]
+            * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForNonKernels[1])
+            / elapsedTimeForBaseGPUImplementation
     );
 
     printImplementationData(
