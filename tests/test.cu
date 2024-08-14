@@ -4,7 +4,6 @@
 #include "../data.cuh"
 #include "../reduction.cuh"
 #include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
-#include <random>
 
 TEST_SUITE("reduction of arrays with different sizes") {
     int initializeTestingDataAndGetSum(int *data, unsigned int size) {
@@ -28,11 +27,10 @@ TEST_SUITE("reduction of arrays with different sizes") {
             CHECK_EQ(reductionResult.value, expectedSum);
         }
 
-        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
-        CHECK_EQ(reductionResultForThrust.value, expectedSum);
-
-        ReductionResult reductionResultForCPU = reduceAndMeasureTimeWithCPU(testingData, dataSize);
-        CHECK_EQ(reductionResultForCPU.value, expectedSum);
+        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
+            ReductionResult reductionResult = reduceNonKernelImplementation.function(testingData, dataSize);
+            CHECK_EQ(reductionResult.value, expectedSum);
+        }
     }
 
     TEST_CASE("reduce small arrays") {
@@ -66,11 +64,10 @@ TEST_SUITE("reduction of arrays with random data") {
             CHECK_EQ(reductionResult.value, expectedSum);
         }
 
-        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
-        CHECK_EQ(reductionResultForThrust.value, expectedSum);
-
-        ReductionResult reductionResultForCPU = reduceAndMeasureTimeWithCPU(testingData, dataSize);
-        CHECK_EQ(reductionResultForCPU.value, expectedSum);
+        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
+            ReductionResult reductionResult = reduceNonKernelImplementation.function(testingData, dataSize);
+            CHECK_EQ(reductionResult.value, expectedSum);
+        }
     }
 }
 
