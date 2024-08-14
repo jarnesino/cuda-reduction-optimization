@@ -3,8 +3,6 @@
 #include "reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 #include <string>
 
-const unsigned int NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS = 2;
-
 void measureElapsedTimes(
         unsigned int dataSize,
         unsigned int SAMPLE_SIZE,
@@ -78,21 +76,17 @@ void measureElapsedTimes(
             );
         }
 
-        ReductionResult reductionResultForThrust = reduceAndMeasureTimeWithThrust(testingData, dataSize);
-        elapsedTimesInMillisecondsForNonKernels[0] += reductionResultForThrust.elapsedMilliseconds;
-        printf(
-                "Completed sample %d for (non-kernel) implementation %d\n",
-                sampleNumber,
-                NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1
-        );
-
-        ReductionResult reductionResultForCPU = reduceAndMeasureTimeWithCPU(testingData, dataSize);
-        elapsedTimesInMillisecondsForNonKernels[1] += reductionResultForCPU.elapsedMilliseconds;
-        printf(
-                "Completed sample %d for (non-kernel) implementation %d\n",
-                sampleNumber,
-                NUMBER_OF_KERNEL_IMPLEMENTATIONS + 2
-        );
+        for (unsigned int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
+            ReductionResult reductionResultForImplementation = reduceNonKernelImplementations[index].function(
+                    testingData, dataSize
+            );
+            elapsedTimesInMillisecondsForNonKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
+            printf(
+                    "Completed sample %d for (non-kernel) implementation %d\n",
+                    sampleNumber,
+                    reduceNonKernelImplementations[index].number
+            );
+        }
     }
 
     for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++)
@@ -118,7 +112,7 @@ void printBenchmarkStats(
     float timesFasterVsBaseGPU;
     float percentageOfTimeSavedVsBaseGPU;
 
-    const float elapsedTimeForSequentialCPUImplementation = elapsedTimesInMillisecondsForNonKernels[1];
+    const float elapsedTimeForSequentialCPUImplementation = elapsedTimesInMillisecondsForNonKernels[0];
     const float elapsedTimeForBaseGPUImplementation = elapsedTimesInMillisecondsForKernels[0];
     for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
         timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMillisecondsForKernels[index];
@@ -145,47 +139,30 @@ void printBenchmarkStats(
         );
     }
 
-    timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMillisecondsForNonKernels[0];
-    percentageOfTimeSavedVsCPU = (
-            100.0f
-            * (elapsedTimeForSequentialCPUImplementation - elapsedTimesInMillisecondsForNonKernels[0])
-            / elapsedTimeForSequentialCPUImplementation
-    );
-    timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForNonKernels[0];
-    percentageOfTimeSavedVsBaseGPU = (
-            100.0f
-            * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForNonKernels[0])
-            / elapsedTimeForBaseGPUImplementation
-    );
+    for (int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
+        timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMillisecondsForNonKernels[index];
+        percentageOfTimeSavedVsCPU = (
+                100.0f
+                * (elapsedTimeForSequentialCPUImplementation - elapsedTimesInMillisecondsForNonKernels[index])
+                / elapsedTimeForSequentialCPUImplementation
+        );
+        timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForNonKernels[index];
+        percentageOfTimeSavedVsBaseGPU = (
+                100.0f
+                * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForNonKernels[index])
+                / elapsedTimeForBaseGPUImplementation
+        );
 
-    printImplementationData(
-            NUMBER_OF_KERNEL_IMPLEMENTATIONS + 1,
-            "CUDA Thrust",
-            elapsedTimesInMillisecondsForNonKernels[0],
-            timesFasterVsCPU,
-            percentageOfTimeSavedVsCPU,
-            timesFasterVsBaseGPU,
-            percentageOfTimeSavedVsBaseGPU
-    );
-
-    timesFasterVsCPU = 1;
-    percentageOfTimeSavedVsCPU = 0;
-    timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMillisecondsForNonKernels[1];
-    percentageOfTimeSavedVsBaseGPU = (
-            100.0f
-            * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMillisecondsForNonKernels[1])
-            / elapsedTimeForBaseGPUImplementation
-    );
-
-    printImplementationData(
-            NUMBER_OF_KERNEL_IMPLEMENTATIONS + 2,
-            "CPU sequential",
-            elapsedTimesInMillisecondsForNonKernels[1],
-            timesFasterVsCPU,
-            percentageOfTimeSavedVsCPU,
-            timesFasterVsBaseGPU,
-            percentageOfTimeSavedVsBaseGPU
-    );
+        printImplementationData(
+                reduceNonKernelImplementations[index].number,
+                reduceNonKernelImplementations[index].name,
+                elapsedTimesInMillisecondsForNonKernels[index],
+                timesFasterVsCPU,
+                percentageOfTimeSavedVsCPU,
+                timesFasterVsBaseGPU,
+                percentageOfTimeSavedVsBaseGPU
+        );
+    }
 
     printf("*****************************************************************************************\n");
 }
@@ -203,12 +180,12 @@ void printImplementationData(
     std::cout << implementationName << "\n";
     printf("\t Time: %f ms\n", elapsedTimeInMilliseconds);
     printf(
-            "\t Against CPU implementation: %f faster | %f%% time saved\n",
+            "\t Against CPU implementation: %f times as fast | %f%% time saved\n",
             timesFasterVsCPU,
             percentageOfTimeSavedVsCPU
     );
     printf(
-            "\t Against base GPU implementation: %f faster | %f%% time saved\n",
+            "\t Against base GPU implementation: %f times as fast | %f%% time saved\n",
             timesFasterVsBaseGPU,
             percentageOfTimeSavedVsBaseGPU
     );
