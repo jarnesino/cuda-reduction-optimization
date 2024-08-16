@@ -9,7 +9,7 @@ struct ReductionResult {
 };
 
 ReductionResult reduceAndMeasureTime(
-        const ReduceImplementationKernel& reduceKernel, int *inputData, unsigned int dataSize
+        const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
 );
 
 void checkForCUDAErrors();
