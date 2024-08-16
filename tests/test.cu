@@ -2,7 +2,8 @@
 
 #include "doctest.h"
 #include "../data.cuh"
-#include "../reduction.cuh"
+#include "../reduce_kernel_implementations/reduce_kernels.cuh"
+#include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 
 TEST_SUITE("reduction of arrays with random data") {
     TEST_CASE("reduce arrays with random positive and negative integers") {
