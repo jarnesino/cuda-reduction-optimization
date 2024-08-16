@@ -73,4 +73,8 @@ unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned 
 
 extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS];
 
+int reduceWithKernel(
+        const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
+);
+
 #endif  // REDUCE_KERNELS

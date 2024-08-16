@@ -1,9 +1,5 @@
 #include "reduction.cuh"
 
-int reduceWithKernel(
-        const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
-);
-
 int reduceWithKernelInDevice(
         const ReduceImplementationKernel &reduceImplementationKernel,
         unsigned int remainingElements,
