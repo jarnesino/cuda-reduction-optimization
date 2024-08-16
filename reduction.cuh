@@ -17,6 +17,4 @@ TimedReductionResult reduceAndMeasureTimeWithNonKernel(
         const ReduceNonKernelImplementation &implementation, int *inputData, unsigned int dataSize
 );
 
-void checkForCUDAErrors();
-
 #endif  // REDUCTION
