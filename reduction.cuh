@@ -1,7 +1,6 @@
 #ifndef REDUCTION
 #define REDUCTION
 
-#include <iostream>
 #include "reduce_kernel_implementations/reduce_kernels.cuh"
 
 struct ReductionResult {

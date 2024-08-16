@@ -1,6 +1,7 @@
 #ifndef REDUCE_KERNELS
 #define REDUCE_KERNELS
 
+#include <iostream>
 #include <string>
 #include <cuda_runtime.h>
 
