@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include "doctest.h"
-#include "../data.cuh"
+#include "../data/data.cuh"
 #include "../reduce_kernel_implementations/reduce_kernels.cuh"
 #include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 
