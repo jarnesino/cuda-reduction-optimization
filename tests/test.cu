@@ -20,17 +20,17 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            TimedReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
+            int sum = reduceWithKernel(
                     reduceKernel, testingData, dataSize
             );
-            CHECK_EQ(reductionResult.value, expectedSum);
+            CHECK_EQ(sum, expectedSum);
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            TimedReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
-                    reduceNonKernelImplementation, testingData, dataSize
+            int sum = reduceNonKernelImplementation.function(
+                    testingData, dataSize
             );
-            CHECK_EQ(reductionResult.value, expectedSum);
+            CHECK_EQ(sum, expectedSum);
         }
     }
 
@@ -58,18 +58,17 @@ TEST_SUITE("reduction of arrays with random data") {
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            TimedReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
+            int sum = reduceWithKernel(
                     reduceKernel, testingData, dataSize
             );
-
-            CHECK_EQ(reductionResult.value, expectedSum);
+            CHECK_EQ(sum, expectedSum);
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            TimedReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
-                    reduceNonKernelImplementation, testingData, dataSize
+            int sum = reduceNonKernelImplementation.function(
+                    testingData, dataSize
             );
-            CHECK_EQ(reductionResult.value, expectedSum);
+            CHECK_EQ(sum, expectedSum);
         }
     }
 }
