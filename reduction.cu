@@ -9,7 +9,7 @@ int reduceWithKernelInDevice(
         int *outputPointer
 );
 
-ReductionResult reduceAndMeasureTimeWithKernel(
+TimedReductionResult reduceAndMeasureTimeWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, const unsigned int dataSize
 ) {
     // Create CUDA events for timing.
@@ -32,10 +32,10 @@ ReductionResult reduceAndMeasureTimeWithKernel(
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
 
-    return ReductionResult{value, elapsedTimeInMilliseconds};
+    return TimedReductionResult{value, elapsedTimeInMilliseconds};
 }
 
-ReductionResult reduceAndMeasureTimeWithNonKernel(
+TimedReductionResult reduceAndMeasureTimeWithNonKernel(
         const ReduceNonKernelImplementation &implementation, int *inputData, const unsigned int dataSize
 ) {
     // Create CUDA events for timing.
@@ -58,5 +58,5 @@ ReductionResult reduceAndMeasureTimeWithNonKernel(
     cudaEventDestroy(startEvent);
     cudaEventDestroy(stopEvent);
 
-    return ReductionResult{value, elapsedTimeInMilliseconds};
+    return TimedReductionResult{value, elapsedTimeInMilliseconds};
 }

@@ -63,7 +63,7 @@ void measureElapsedTimes(
         initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
-            ReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithKernel(
+            TimedReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithKernel(
                     reduceImplementationKernels[index], testingData, dataSize
             );
             elapsedTimesInMillisecondsForKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
@@ -76,7 +76,7 @@ void measureElapsedTimes(
         }
 
         for (unsigned int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
-            ReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithNonKernel(
+            TimedReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithNonKernel(
                 reduceNonKernelImplementations[index], testingData, dataSize
             );
             elapsedTimesInMillisecondsForNonKernels[index] += reductionResultForImplementation.elapsedMilliseconds;

@@ -20,14 +20,14 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            ReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
+            TimedReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
                     reduceKernel, testingData, dataSize
             );
             CHECK_EQ(reductionResult.value, expectedSum);
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            ReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
+            TimedReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
                     reduceNonKernelImplementation, testingData, dataSize
             );
             CHECK_EQ(reductionResult.value, expectedSum);
@@ -58,7 +58,7 @@ TEST_SUITE("reduction of arrays with random data") {
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            ReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
+            TimedReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
                     reduceKernel, testingData, dataSize
             );
 
@@ -66,7 +66,7 @@ TEST_SUITE("reduction of arrays with random data") {
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            ReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
+            TimedReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
                     reduceNonKernelImplementation, testingData, dataSize
             );
             CHECK_EQ(reductionResult.value, expectedSum);
