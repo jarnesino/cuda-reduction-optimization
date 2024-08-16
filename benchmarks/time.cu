@@ -1,4 +1,4 @@
-#include "reduction.cuh"
+#include "time.cuh"
 
 TimedReductionResult reduceAndMeasureTimeWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, const unsigned int dataSize

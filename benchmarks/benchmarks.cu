@@ -1,4 +1,4 @@
-#include "reduction.cuh"
+#include "time.cuh"
 #include "../data/data.cuh"
 #include <string>
 

@@ -4,7 +4,7 @@ REDUCE_KERNEL_IMPLEMENTATIONS_DIRECTORY = reduce_kernel_implementations
 REDUCE_NON_KERNEL_IMPLEMENTATIONS_DIRECTORY = reduce_non_kernel_implementations
 REDUCE_IMPLEMENTATIONS = $(wildcard $(REDUCE_KERNEL_IMPLEMENTATIONS_DIRECTORY)/*.cu) $(wildcard $(REDUCE_NON_KERNEL_IMPLEMENTATIONS_DIRECTORY)/*.cu)
 REDUCTION_FILES = data/data.cu $(REDUCE_IMPLEMENTATIONS)
-BENCHMARK_FILES = benchmarks/benchmarks.cu benchmarks/reduction.cu $(REDUCTION_FILES)
+BENCHMARK_FILES = benchmarks/benchmarks.cu benchmarks/time.cu $(REDUCTION_FILES)
 
 TEST_TARGET = test
 BENCHMARK_TARGET = benchmark
