@@ -1,14 +1,5 @@
 #include "reduction.cuh"
 
-int reduceWithKernelInDevice(
-        const ReduceImplementationKernel &reduceImplementationKernel,
-        unsigned int remainingElements,
-        unsigned int numberOfBlocks,
-        size_t sharedMemSize,
-        int *inputPointer,
-        int *outputPointer
-);
-
 TimedReductionResult reduceAndMeasureTimeWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, const unsigned int dataSize
 ) {
