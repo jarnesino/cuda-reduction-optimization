@@ -1,4 +1,4 @@
-#include "../reduction.cuh"
+#include "../benchmarks/reduction.cuh"
 
 int reduceWithCPU(int *inputData, unsigned int size) {int sum = 0;
     for (unsigned int index = 0; index < size; index++) {

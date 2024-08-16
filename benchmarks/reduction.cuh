@@ -1,8 +1,8 @@
 #ifndef REDUCTION
 #define REDUCTION
 
-#include "reduce_kernel_implementations/reduce_kernels.cuh"
-#include "reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
+#include "../reduce_kernel_implementations/reduce_kernels.cuh"
+#include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 
 struct TimedReductionResult {
     int value;

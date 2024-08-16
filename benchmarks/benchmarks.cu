@@ -1,5 +1,5 @@
 #include "reduction.cuh"
-#include "data/data.cuh"
+#include "../data/data.cuh"
 #include <string>
 
 void measureElapsedTimes(
