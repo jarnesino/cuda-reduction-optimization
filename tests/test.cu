@@ -3,7 +3,6 @@
 #include "doctest.h"
 #include "../data.cuh"
 #include "../reduction.cuh"
-#include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 
 TEST_SUITE("reduction of arrays with different sizes") {
     int initializeTestingDataAndGetSum(int *data, unsigned int size) {
@@ -21,14 +20,16 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            ReductionResult reductionResult = reduceAndMeasureTime(
+            ReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
                     reduceKernel, testingData, dataSize
             );
             CHECK_EQ(reductionResult.value, expectedSum);
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            ReductionResult reductionResult = reduceNonKernelImplementation.function(testingData, dataSize);
+            ReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
+                    reduceNonKernelImplementation, testingData, dataSize
+            );
             CHECK_EQ(reductionResult.value, expectedSum);
         }
     }
@@ -57,7 +58,7 @@ TEST_SUITE("reduction of arrays with random data") {
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (const auto &reduceKernel: reduceImplementationKernels) {
-            ReductionResult reductionResult = reduceAndMeasureTime(
+            ReductionResult reductionResult = reduceAndMeasureTimeWithKernel(
                     reduceKernel, testingData, dataSize
             );
 
@@ -65,7 +66,9 @@ TEST_SUITE("reduction of arrays with random data") {
         }
 
         for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            ReductionResult reductionResult = reduceNonKernelImplementation.function(testingData, dataSize);
+            ReductionResult reductionResult = reduceAndMeasureTimeWithNonKernel(
+                    reduceNonKernelImplementation, testingData, dataSize
+            );
             CHECK_EQ(reductionResult.value, expectedSum);
         }
     }

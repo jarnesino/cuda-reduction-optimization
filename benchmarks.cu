@@ -1,6 +1,5 @@
 #include "reduction.cuh"
 #include "data.cuh"
-#include "reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
 #include <string>
 
 void measureElapsedTimes(
@@ -64,7 +63,7 @@ void measureElapsedTimes(
         initializeRandomDataAndGetSumIn(testingData, dataSize);
 
         for (int index = 0; index < NUMBER_OF_KERNEL_IMPLEMENTATIONS; index++) {
-            ReductionResult reductionResultForImplementation = reduceAndMeasureTime(
+            ReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithKernel(
                     reduceImplementationKernels[index], testingData, dataSize
             );
             elapsedTimesInMillisecondsForKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
@@ -77,8 +76,8 @@ void measureElapsedTimes(
         }
 
         for (unsigned int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
-            ReductionResult reductionResultForImplementation = reduceNonKernelImplementations[index].function(
-                    testingData, dataSize
+            ReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithNonKernel(
+                reduceNonKernelImplementations[index], testingData, dataSize
             );
             elapsedTimesInMillisecondsForNonKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
             printf(

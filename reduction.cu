@@ -9,10 +9,8 @@ int reduceWithKernelInDevice(
         int *outputPointer
 );
 
-ReductionResult reduceAndMeasureTime(
-        const ReduceImplementationKernel &reduceKernel,
-        int *inputData,
-        const unsigned int dataSize
+ReductionResult reduceAndMeasureTimeWithKernel(
+        const ReduceImplementationKernel &reduceKernel, int *inputData, const unsigned int dataSize
 ) {
     // Create CUDA events for timing.
     cudaEvent_t startEvent, stopEvent;
@@ -22,6 +20,32 @@ ReductionResult reduceAndMeasureTime(
     cudaEventRecord(startEvent, nullptr);
 
     int value = reduceWithKernel(reduceKernel, inputData, dataSize);
+
+    // Record the CUDA stop event and wait for it to complete.
+    cudaEventRecord(stopEvent, nullptr);
+    cudaEventSynchronize(stopEvent);
+
+    float elapsedTimeInMilliseconds;
+    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
+
+    // Destroy the CUDA events for timing.
+    cudaEventDestroy(startEvent);
+    cudaEventDestroy(stopEvent);
+
+    return ReductionResult{value, elapsedTimeInMilliseconds};
+}
+
+ReductionResult reduceAndMeasureTimeWithNonKernel(
+        const ReduceNonKernelImplementation &implementation, int *inputData, const unsigned int dataSize
+) {
+    // Create CUDA events for timing.
+    cudaEvent_t startEvent, stopEvent;
+    cudaEventCreate(&startEvent);
+    cudaEventCreate(&stopEvent);
+    // Record the CUDA start event.
+    cudaEventRecord(startEvent, nullptr);
+
+    int value = implementation.function(inputData, dataSize);
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);
