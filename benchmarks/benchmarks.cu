@@ -77,7 +77,7 @@ void measureElapsedTimes(
 
         for (unsigned int index = 0; index < NUMBER_OF_NON_KERNEL_IMPLEMENTATIONS; index++) {
             TimedReductionResult reductionResultForImplementation = reduceAndMeasureTimeWithNonKernel(
-                reduceNonKernelImplementations[index], testingData, dataSize
+                    reduceNonKernelImplementations[index], testingData, dataSize
             );
             elapsedTimesInMillisecondsForNonKernels[index] += reductionResultForImplementation.elapsedMilliseconds;
             printf(
