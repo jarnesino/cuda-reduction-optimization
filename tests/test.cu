@@ -4,6 +4,29 @@
 #include "../data.cuh"
 #include "../reduction.cuh"
 
+TEST_SUITE("reduction of arrays with random data") {
+    TEST_CASE("reduce arrays with random positive and negative integers") {
+        const unsigned int logDataSize = 11;
+        const unsigned int dataSize = 1 << logDataSize;
+        int *testingData = new int[dataSize];
+        int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
+
+        for (const auto &reduceKernel: reduceImplementationKernels) {
+            int sum = reduceWithKernel(
+                    reduceKernel, testingData, dataSize
+            );
+            CHECK_EQ(sum, expectedSum);
+        }
+
+        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
+            int sum = reduceNonKernelImplementation.function(
+                    testingData, dataSize
+            );
+            CHECK_EQ(sum, expectedSum);
+        }
+    }
+}
+
 TEST_SUITE("reduction of arrays with different sizes") {
     int initializeTestingDataAndGetSum(int *data, unsigned int size) {
         for (unsigned int index1 = 0; index1 < size; ++index1) {
@@ -47,29 +70,6 @@ TEST_SUITE("reduction of arrays with different sizes") {
     TEST_CASE("reduce big arrays") {
         const unsigned int logDataSize = 30;
         testReductionsWithArrayOfLogSize(logDataSize);
-    }
-}
-
-TEST_SUITE("reduction of arrays with random data") {
-    TEST_CASE("reduce arrays with random positive and negative integers") {
-        const unsigned int logDataSize = 11;
-        const unsigned int dataSize = 1 << logDataSize;
-        int *testingData = new int[dataSize];
-        int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
-
-        for (const auto &reduceKernel: reduceImplementationKernels) {
-            int sum = reduceWithKernel(
-                    reduceKernel, testingData, dataSize
-            );
-            CHECK_EQ(sum, expectedSum);
-        }
-
-        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            int sum = reduceNonKernelImplementation.function(
-                    testingData, dataSize
-            );
-            CHECK_EQ(sum, expectedSum);
-        }
     }
 }
 
