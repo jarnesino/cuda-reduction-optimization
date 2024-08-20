@@ -53,10 +53,4 @@ int reduceWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
 );
 
-//ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS] = {
-//        {interleavedAddressingWithLocalMemory,        numberOfBlocksForStandardReduction},
-//        {interleavedAddressingWithDivergentBranching, numberOfBlocksForStandardReduction},
-//        {interleavedAddressingWithBankConflicts,      numberOfBlocksForStandardReduction},
-//};
-
 #endif  // REDUCE_KERNELS
