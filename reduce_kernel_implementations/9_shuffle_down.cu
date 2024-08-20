@@ -6,7 +6,7 @@ __inline__ __device__ int warpReduce(int val) {
     return val;
 }
 
-__global__ void shuffle_down(
+__global__ void shuffleDown(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -56,7 +56,7 @@ __global__ void shuffle_down(
 }
 
 int reduceWithShuffleDown(int *data, unsigned int dataSize) {
-    ReduceImplementationKernel kernel = {shuffle_down, numberOfBlocksForReductionWithConsecutiveMemoryAddressing};
+    ReduceImplementationKernel kernel = {shuffleDown, numberOfBlocksForReductionWithConsecutiveMemoryAddressing};
     return reduceWithKernel(kernel, data, dataSize);
 }
 

@@ -11,7 +11,7 @@ __device__ void warpReduce(volatile int *data, unsigned int threadBlockIndex) {
     if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
 
-__global__ void operations_for_consecutive_memory_addressing(
+__global__ void operationsForConsecutiveMemoryAddressing(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -55,7 +55,7 @@ __global__ void operations_for_consecutive_memory_addressing(
 
 int reduceWithOperationsForConsecutiveMemoryAddressing(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            operations_for_consecutive_memory_addressing, numberOfBlocksForReductionWithConsecutiveMemoryAddressing
+            operationsForConsecutiveMemoryAddressing, numberOfBlocksForReductionWithConsecutiveMemoryAddressing
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

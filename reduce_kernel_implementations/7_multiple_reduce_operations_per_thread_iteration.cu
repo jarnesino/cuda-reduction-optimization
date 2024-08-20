@@ -11,7 +11,7 @@ __device__ void warpReduce(volatile int *data, unsigned int threadBlockIndex) {
     if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
 
-__global__ void multiple_reduce_operations_per_thread_iteration(
+__global__ void multipleReduceOperationsPerThreadIteration(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -53,7 +53,7 @@ __global__ void multiple_reduce_operations_per_thread_iteration(
 
 int reduceWithMultipleReduceOperationsPerThreadIteration(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            multiple_reduce_operations_per_thread_iteration, numberOfBlocksForReductionWithMultipleSteps
+            multipleReduceOperationsPerThreadIteration, numberOfBlocksForReductionWithMultipleSteps
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

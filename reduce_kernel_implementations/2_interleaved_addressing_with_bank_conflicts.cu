@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void interleaved_addressing_with_bank_conflicts(
+__global__ void interleavedAddressingWithBankConflicts(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -28,7 +28,7 @@ __global__ void interleaved_addressing_with_bank_conflicts(
 
 int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            interleaved_addressing_with_bank_conflicts, numberOfBlocksForStandardReduction
+            interleavedAddressingWithBankConflicts, numberOfBlocksForStandardReduction
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

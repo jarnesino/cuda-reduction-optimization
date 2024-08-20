@@ -9,7 +9,7 @@ __device__ void warpReduce(volatile int *data, const unsigned int threadBlockInd
     data[threadBlockIndex] += data[threadBlockIndex + 1];
 }
 
-__global__ void loop_unrolling_only_at_warp_level_iterations(
+__global__ void loopUnrollingOnlyAtWarpLevelIterations(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -40,7 +40,7 @@ __global__ void loop_unrolling_only_at_warp_level_iterations(
 
 int reduceWithLoopUnrollingOnlyAtWarpLevelIterations(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            loop_unrolling_only_at_warp_level_iterations, numberOfBlocksForReductionWithExtraStep
+            loopUnrollingOnlyAtWarpLevelIterations, numberOfBlocksForReductionWithExtraStep
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void sequential_addressing_with_idle_threads(
+__global__ void sequentialAddressingWithIdleThreads(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -31,7 +31,7 @@ __global__ void sequential_addressing_with_idle_threads(
 }
 
 int reduceWithSequentialAddressingWithIdleThreads(int *data, unsigned int dataSize) {
-    ReduceImplementationKernel kernel = {sequential_addressing_with_idle_threads, numberOfBlocksForStandardReduction};
+    ReduceImplementationKernel kernel = {sequentialAddressingWithIdleThreads, numberOfBlocksForStandardReduction};
     return reduceWithKernel(kernel, data, dataSize);
 }
 

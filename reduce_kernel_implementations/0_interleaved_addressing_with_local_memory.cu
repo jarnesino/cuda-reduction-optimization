@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void interleaved_addressing_with_local_memory(
+__global__ void interleavedAddressingWithLocalMemory(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     unsigned int blockSize = blockDim.x;
@@ -23,7 +23,7 @@ __global__ void interleaved_addressing_with_local_memory(
 
 int reduceWithInterleavedAddressingWithLocalMemory(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            interleaved_addressing_with_local_memory, numberOfBlocksForStandardReduction
+            interleavedAddressingWithLocalMemory, numberOfBlocksForStandardReduction
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

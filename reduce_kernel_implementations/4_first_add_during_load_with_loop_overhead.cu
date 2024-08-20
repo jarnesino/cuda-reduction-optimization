@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void first_add_during_load_with_loop_overhead(
+__global__ void firstAddDuringLoadWithLoopOverhead(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -30,7 +30,7 @@ __global__ void first_add_during_load_with_loop_overhead(
 
 int reduceWithFirstAddDuringLoadWithLoopOverhead(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            first_add_during_load_with_loop_overhead, numberOfBlocksForReductionWithExtraStep
+            firstAddDuringLoadWithLoopOverhead, numberOfBlocksForReductionWithExtraStep
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

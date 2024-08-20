@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void interleaved_addressing_with_divergent_branching(
+__global__ void interleavedAddressingWithDivergentBranching(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     extern __shared__ int sharedData[];
@@ -27,7 +27,7 @@ __global__ void interleaved_addressing_with_divergent_branching(
 
 int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction
+            interleavedAddressingWithDivergentBranching, numberOfBlocksForStandardReduction
     };
     return reduceWithKernel(kernel, data, dataSize);
 }

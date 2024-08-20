@@ -54,9 +54,9 @@ int reduceWithKernel(
 );
 
 //ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS] = {
-//        {interleaved_addressing_with_local_memory,        numberOfBlocksForStandardReduction},
-//        {interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction},
-//        {interleaved_addressing_with_bank_conflicts,      numberOfBlocksForStandardReduction},
+//        {interleavedAddressingWithLocalMemory,        numberOfBlocksForStandardReduction},
+//        {interleavedAddressingWithDivergentBranching, numberOfBlocksForStandardReduction},
+//        {interleavedAddressingWithBankConflicts,      numberOfBlocksForStandardReduction},
 //};
 
 #endif  // REDUCE_KERNELS
