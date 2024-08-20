@@ -2,8 +2,7 @@
 
 #include "doctest.h"
 #include "../data/data.cuh"
-#include "../reduce_kernel_implementations/reduce_kernels.cuh"
-#include "../reduce_non_kernel_implementations/reduce_non_kernel_implementations.cuh"
+#include "../reduction.cuh"
 
 TEST_SUITE("reduction of arrays with random data") {
     TEST_CASE("reduce arrays with random positive and negative integers") {
@@ -12,17 +11,8 @@ TEST_SUITE("reduction of arrays with random data") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
-        for (const auto &reduceKernel: reduceImplementationKernels) {
-            int sum = reduceWithKernel(
-                    reduceKernel, testingData, dataSize
-            );
-            CHECK_EQ(sum, expectedSum);
-        }
-
-        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            int sum = reduceNonKernelImplementation.function(
-                    testingData, dataSize
-            );
+        for (const auto &reduceImplementation: reduceImplementations) {
+            int sum = reduceImplementation.function(testingData, dataSize);
             CHECK_EQ(sum, expectedSum);
         }
     }
@@ -43,17 +33,8 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
-        for (const auto &reduceKernel: reduceImplementationKernels) {
-            int sum = reduceWithKernel(
-                    reduceKernel, testingData, dataSize
-            );
-            CHECK_EQ(sum, expectedSum);
-        }
-
-        for (const auto &reduceNonKernelImplementation: reduceNonKernelImplementations) {
-            int sum = reduceNonKernelImplementation.function(
-                    testingData, dataSize
-            );
+        for (const auto &reduceImplementation: reduceImplementations) {
+            int sum = reduceImplementation.function(testingData, dataSize);
             CHECK_EQ(sum, expectedSum);
         }
     }

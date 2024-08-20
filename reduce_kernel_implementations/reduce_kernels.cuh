@@ -15,53 +15,31 @@ typedef void (*reduceKernelFunction)(int *inputData, int *outputData, unsigned i
 typedef unsigned int (*numberOfBlocksFunction)(unsigned int dataSize);
 
 struct ReduceImplementationKernel {
-    const int number;
-    std::string name;
     reduceKernelFunction function;
     numberOfBlocksFunction numberOfBlocksFunction;
 };
 
 unsigned int unsignedMin(unsigned int a, unsigned int b);
 
-__global__ void interleaved_addressing_with_local_memory(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithInterleavedAddressingWithLocalMemory(int *data, unsigned int dataSize);
 
-__global__ void interleaved_addressing_with_divergent_branching(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize);
 
-__global__ void interleaved_addressing_with_bank_conflicts(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize);
 
-__global__ void sequential_addressing_with_idle_threads(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithSequentialAddressingWithIdleThreads(int *data, unsigned int dataSize);
 
-__global__ void first_add_during_load_with_loop_overhead(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithFirstAddDuringLoadWithLoopOverhead(int *data, unsigned int dataSize);
 
-__global__ void loop_unrolling_only_at_warp_level_iterations(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithLoopUnrollingOnlyAtWarpLevelIterations(int *data, unsigned int dataSize);
 
-__global__ void complete_loop_unrolling_with_one_reduction(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithCompleteLoopUnrollingWithOneReduction(int *data, unsigned int dataSize);
 
-__global__ void multiple_reduce_operations_per_thread_iteration(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithMultipleReduceOperationsPerThreadIteration(int *data, unsigned int dataSize);
 
-__global__ void operations_for_consecutive_memory_addressing(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithOperationsForConsecutiveMemoryAddressing(int *data, unsigned int dataSize);
 
-__global__ void shuffle_down(
-        int *inputData, int *outputData, unsigned int dataSize
-);
+int reduceWithShuffleDown(int *data, unsigned int dataSize);
 
 unsigned int numberOfBlocksForStandardReduction(unsigned int dataSize);
 
@@ -71,10 +49,14 @@ unsigned int numberOfBlocksForReductionWithMultipleSteps(unsigned int dataSize);
 
 unsigned int numberOfBlocksForReductionWithConsecutiveMemoryAddressing(unsigned int dataSize);
 
-extern ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS];
-
 int reduceWithKernel(
         const ReduceImplementationKernel &reduceKernel, int *inputData, unsigned int dataSize
 );
+
+//ReduceImplementationKernel reduceImplementationKernels[NUMBER_OF_KERNEL_IMPLEMENTATIONS] = {
+//        {interleaved_addressing_with_local_memory,        numberOfBlocksForStandardReduction},
+//        {interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction},
+//        {interleaved_addressing_with_bank_conflicts,      numberOfBlocksForStandardReduction},
+//};
 
 #endif  // REDUCE_KERNELS

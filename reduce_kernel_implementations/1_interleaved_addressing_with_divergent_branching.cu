@@ -25,6 +25,13 @@ __global__ void interleaved_addressing_with_divergent_branching(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
+int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            interleaved_addressing_with_divergent_branching, numberOfBlocksForStandardReduction
+    };
+    return reduceWithKernel(kernel, data, dataSize);
+}
+
 /*
 
 A warp is a set of 32 threads inside a block, and they all share the program counter. They all execute the same instruction at the same time.

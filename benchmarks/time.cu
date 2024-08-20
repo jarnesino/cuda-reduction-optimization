@@ -1,7 +1,7 @@
 #include "time.cuh"
 
-TimedReductionResult reduceAndMeasureTimeWithKernel(
-        const ReduceImplementationKernel &reduceKernel, int *inputData, const unsigned int dataSize
+TimedReductionResult reduceAndMeasureTime(
+        const ReduceImplementation &reduceImplementation, int *inputData, const unsigned int dataSize
 ) {
     // Create CUDA events for timing.
     cudaEvent_t startEvent, stopEvent;
@@ -10,33 +10,7 @@ TimedReductionResult reduceAndMeasureTimeWithKernel(
     // Record the CUDA start event.
     cudaEventRecord(startEvent, nullptr);
 
-    int value = reduceWithKernel(reduceKernel, inputData, dataSize);
-
-    // Record the CUDA stop event and wait for it to complete.
-    cudaEventRecord(stopEvent, nullptr);
-    cudaEventSynchronize(stopEvent);
-
-    float elapsedTimeInMilliseconds;
-    cudaEventElapsedTime(&elapsedTimeInMilliseconds, startEvent, stopEvent);
-
-    // Destroy the CUDA events for timing.
-    cudaEventDestroy(startEvent);
-    cudaEventDestroy(stopEvent);
-
-    return TimedReductionResult{value, elapsedTimeInMilliseconds};
-}
-
-TimedReductionResult reduceAndMeasureTimeWithNonKernel(
-        const ReduceNonKernelImplementation &implementation, int *inputData, const unsigned int dataSize
-) {
-    // Create CUDA events for timing.
-    cudaEvent_t startEvent, stopEvent;
-    cudaEventCreate(&startEvent);
-    cudaEventCreate(&stopEvent);
-    // Record the CUDA start event.
-    cudaEventRecord(startEvent, nullptr);
-
-    int value = implementation.function(inputData, dataSize);
+    int value = reduceImplementation.function(inputData, dataSize);
 
     // Record the CUDA stop event and wait for it to complete.
     cudaEventRecord(stopEvent, nullptr);

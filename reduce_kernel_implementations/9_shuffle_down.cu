@@ -1,6 +1,10 @@
 #include "reduce_kernels.cuh"
 
-__inline__ __device__ int warpReduce(int val);
+__inline__ __device__ int warpReduce(int val) {
+    for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
+        val += __shfl_down_sync(0xFFFFFFFF, val, offset);  // Shuffle from the other thread's sum variable register.
+    return val;
+}
 
 __global__ void shuffle_down(
         int *inputData, int *outputData, unsigned int dataSize
@@ -51,10 +55,9 @@ __global__ void shuffle_down(
     }
 }
 
-__inline__ __device__ int warpReduce(int val) {
-    for (int offset = warpSize >> 1; offset > 0; offset >>= 1)
-        val += __shfl_down_sync(0xFFFFFFFF, val, offset);  // Shuffle from the other thread's sum variable register.
-    return val;
+int reduceWithShuffleDown(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {shuffle_down, numberOfBlocksForReductionWithConsecutiveMemoryAddressing};
+    return reduceWithKernel(kernel, data, dataSize);
 }
 
 /*

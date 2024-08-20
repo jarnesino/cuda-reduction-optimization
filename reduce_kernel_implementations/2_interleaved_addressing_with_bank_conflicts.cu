@@ -26,6 +26,13 @@ __global__ void interleaved_addressing_with_bank_conflicts(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
+int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            interleaved_addressing_with_bank_conflicts, numberOfBlocksForStandardReduction
+    };
+    return reduceWithKernel(kernel, data, dataSize);
+}
+
 /*
 
 Memory banks are divisions of the shared memory in CUDA.

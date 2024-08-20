@@ -30,6 +30,11 @@ __global__ void sequential_addressing_with_idle_threads(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
+int reduceWithSequentialAddressingWithIdleThreads(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {sequential_addressing_with_idle_threads, numberOfBlocksForStandardReduction};
+    return reduceWithKernel(kernel, data, dataSize);
+}
+
 /*
 
 Leaving idle threads is wasting parallel processing power.

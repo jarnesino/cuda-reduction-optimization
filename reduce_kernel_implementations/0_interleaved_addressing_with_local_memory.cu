@@ -21,6 +21,13 @@ __global__ void interleaved_addressing_with_local_memory(
     if (threadBlockIndex == 0) outputData[blockIndex] = inputData[threadIndex];
 }
 
+int reduceWithInterleavedAddressingWithLocalMemory(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            interleaved_addressing_with_local_memory, numberOfBlocksForStandardReduction
+    };
+    return reduceWithKernel(kernel, data, dataSize);
+}
+
 /*
 
 There's three (relevant) types of memory in CUDA.

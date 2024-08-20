@@ -1,7 +1,15 @@
 #include "reduce_kernels.cuh"
 
+// Template parameters are needed because device functions cannot access constants, and we want it at compile time.
 template<unsigned int blockSize>
-__device__ void warpReduce(volatile int *sharedData, unsigned int threadBlockIndex);
+__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
+    if (blockSize >= 64) data[threadBlockIndex] += data[threadBlockIndex + 32];
+    if (blockSize >= 32) data[threadBlockIndex] += data[threadBlockIndex + 16];
+    if (blockSize >= 16) data[threadBlockIndex] += data[threadBlockIndex + 8];
+    if (blockSize >= 8) data[threadBlockIndex] += data[threadBlockIndex + 4];
+    if (blockSize >= 4) data[threadBlockIndex] += data[threadBlockIndex + 2];
+    if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
+}
 
 __global__ void complete_loop_unrolling_with_one_reduction(
         int *inputData, int *outputData, unsigned int dataSize
@@ -37,15 +45,11 @@ __global__ void complete_loop_unrolling_with_one_reduction(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
-// Template parameters are needed because device functions cannot access constants, and we want it at compile time.
-template<unsigned int blockSize>
-__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
-    if (blockSize >= 64) data[threadBlockIndex] += data[threadBlockIndex + 32];
-    if (blockSize >= 32) data[threadBlockIndex] += data[threadBlockIndex + 16];
-    if (blockSize >= 16) data[threadBlockIndex] += data[threadBlockIndex + 8];
-    if (blockSize >= 8) data[threadBlockIndex] += data[threadBlockIndex + 4];
-    if (blockSize >= 4) data[threadBlockIndex] += data[threadBlockIndex + 2];
-    if (blockSize >= 2) data[threadBlockIndex] += data[threadBlockIndex + 1];
+int reduceWithCompleteLoopUnrollingWithOneReduction(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            complete_loop_unrolling_with_one_reduction, numberOfBlocksForReductionWithExtraStep
+    };
+    return reduceWithKernel(kernel, data, dataSize);
 }
 
 /*

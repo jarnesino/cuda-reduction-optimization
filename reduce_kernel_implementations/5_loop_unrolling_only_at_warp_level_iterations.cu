@@ -1,6 +1,13 @@
 #include "reduce_kernels.cuh"
 
-__device__ void warpReduce(volatile int *data, unsigned int threadIndex);
+__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
+    data[threadBlockIndex] += data[threadBlockIndex + 32];
+    data[threadBlockIndex] += data[threadBlockIndex + 16];
+    data[threadBlockIndex] += data[threadBlockIndex + 8];
+    data[threadBlockIndex] += data[threadBlockIndex + 4];
+    data[threadBlockIndex] += data[threadBlockIndex + 2];
+    data[threadBlockIndex] += data[threadBlockIndex + 1];
+}
 
 __global__ void loop_unrolling_only_at_warp_level_iterations(
         int *inputData, int *outputData, unsigned int dataSize
@@ -31,13 +38,11 @@ __global__ void loop_unrolling_only_at_warp_level_iterations(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
-__device__ void warpReduce(volatile int *data, const unsigned int threadBlockIndex) {
-    data[threadBlockIndex] += data[threadBlockIndex + 32];
-    data[threadBlockIndex] += data[threadBlockIndex + 16];
-    data[threadBlockIndex] += data[threadBlockIndex + 8];
-    data[threadBlockIndex] += data[threadBlockIndex + 4];
-    data[threadBlockIndex] += data[threadBlockIndex + 2];
-    data[threadBlockIndex] += data[threadBlockIndex + 1];
+int reduceWithLoopUnrollingOnlyAtWarpLevelIterations(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            loop_unrolling_only_at_warp_level_iterations, numberOfBlocksForReductionWithExtraStep
+    };
+    return reduceWithKernel(kernel, data, dataSize);
 }
 
 /*

@@ -28,6 +28,13 @@ __global__ void first_add_during_load_with_loop_overhead(
     if (threadBlockIndex == 0) outputData[blockIndex] = sharedData[0];
 }
 
+int reduceWithFirstAddDuringLoadWithLoopOverhead(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {
+            first_add_during_load_with_loop_overhead, numberOfBlocksForReductionWithExtraStep
+    };
+    return reduceWithKernel(kernel, data, dataSize);
+}
+
 /*
 
 Loops like this one produce instruction overhead.
