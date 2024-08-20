@@ -4,6 +4,15 @@
 #include "../data/data.cuh"
 #include "../reduction.cuh"
 
+static void testAllImplementationsWithData(
+        const unsigned int dataSize, int *testingData, int expectedSum
+) {
+    for (const auto &reduceImplementation: reduceImplementations) {
+        int sum = reduceImplementation.function(testingData, dataSize);
+        CHECK_EQ(sum, expectedSum);
+    }
+}
+
 TEST_SUITE("reduction of arrays with random data") {
     TEST_CASE("reduce arrays with random positive and negative integers") {
         const unsigned int logDataSize = 11;
@@ -11,10 +20,7 @@ TEST_SUITE("reduction of arrays with random data") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeRandomDataAndGetSumIn(testingData, dataSize);
 
-        for (const auto &reduceImplementation: reduceImplementations) {
-            int sum = reduceImplementation.function(testingData, dataSize);
-            CHECK_EQ(sum, expectedSum);
-        }
+        testAllImplementationsWithData(dataSize, testingData, expectedSum);
     }
 }
 
@@ -33,10 +39,7 @@ TEST_SUITE("reduction of arrays with different sizes") {
         int *testingData = new int[dataSize];
         int expectedSum = initializeTestingDataAndGetSum(testingData, dataSize);
 
-        for (const auto &reduceImplementation: reduceImplementations) {
-            int sum = reduceImplementation.function(testingData, dataSize);
-            CHECK_EQ(sum, expectedSum);
-        }
+        testAllImplementationsWithData(dataSize, testingData, expectedSum);
     }
 
     TEST_CASE("reduce small arrays") {
