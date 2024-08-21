@@ -5,7 +5,7 @@
 #include <string>
 #include <cuda_runtime.h>
 
-const unsigned int NUMBER_OF_KERNEL_IMPLEMENTATIONS = 10;
+const unsigned int NUMBER_OF_KERNEL_IMPLEMENTATIONS = 12;
 
 const unsigned int BLOCK_SIZE = 1024;  // Hardcoded for simplicity.
 const unsigned int GRID_SIZE = 16;  // Hardcoded for simplicity.
@@ -21,11 +21,15 @@ struct ReduceImplementationKernel {
 
 unsigned int unsignedMin(unsigned int a, unsigned int b);
 
-int reduceWithInterleavedAddressingWithLocalMemory(int *data, unsigned int dataSize);
+int reduceWithInterleavedAddressingWithLocalMemoryAndDivergentBranching(int *data, unsigned int dataSize);
 
 int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize);
 
+int reduceWithInterleavedAddressingWithLocalMemoryAndBankConflicts(int *data, unsigned int dataSize);
+
 int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize);
+
+int reduceWithSequentialAddressingWithLocalMemoryAndIdleThreads(int *data, unsigned int dataSize);
 
 int reduceWithSequentialAddressingWithIdleThreads(int *data, unsigned int dataSize);
 

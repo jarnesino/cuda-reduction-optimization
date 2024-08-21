@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void interleavedAddressingWithLocalMemory(
+__global__ void interleavedAddressingWithLocalMemoryAndDivergentBranching(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     unsigned int blockSize = blockDim.x;
@@ -21,9 +21,9 @@ __global__ void interleavedAddressingWithLocalMemory(
     if (threadBlockIndex == 0) outputData[blockIndex] = inputData[threadIndex];
 }
 
-int reduceWithInterleavedAddressingWithLocalMemory(int *data, unsigned int dataSize) {
+int reduceWithInterleavedAddressingWithLocalMemoryAndDivergentBranching(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            interleavedAddressingWithLocalMemory, numberOfBlocksForStandardReduction
+            interleavedAddressingWithLocalMemoryAndDivergentBranching, numberOfBlocksForStandardReduction
     };
     return reduceWithKernel(kernel, data, dataSize);
 }
