@@ -9,7 +9,7 @@ __global__ void sequentialAddressingWithLocalMemoryAndIdleThreads(
     unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
     __syncthreads();
 
-    // Do reduction.
+    // Do reduction in global memory. Causes slow access speeds.
     for (
             unsigned int numberOfElementsToReduce = blockSize >> 1;
             numberOfElementsToReduce > 0;
