@@ -7,7 +7,6 @@ __global__ void interleavedAddressingWithGlobalMemoryAndBankConflicts(
     unsigned int blockIndex = blockIdx.x;
     unsigned int threadBlockIndex = threadIdx.x;
     unsigned int threadIndex = blockIndex * blockSize + threadBlockIndex;
-    __syncthreads();
 
     // Do reduction in global memory. Causes slow access speeds.
     for (unsigned int numberOfElementsReduced = 1; numberOfElementsReduced < blockSize; numberOfElementsReduced <<= 1) {
