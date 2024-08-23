@@ -21,15 +21,15 @@ struct ReduceImplementationKernel {
 
 unsigned int unsignedMin(unsigned int a, unsigned int b);
 
-int reduceWithInterleavedAddressingWithLocalMemoryAndDivergentBranching(int *data, unsigned int dataSize);
+int reduceWithInterleavedAddressingWithGlobalMemoryAndDivergentBranching(int *data, unsigned int dataSize);
 
 int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize);
 
-int reduceWithInterleavedAddressingWithLocalMemoryAndBankConflicts(int *data, unsigned int dataSize);
+int reduceWithInterleavedAddressingWithGlobalMemoryAndBankConflicts(int *data, unsigned int dataSize);
 
 int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize);
 
-int reduceWithSequentialAddressingWithLocalMemoryAndIdleThreads(int *data, unsigned int dataSize);
+int reduceWithSequentialAddressingWithGlobalMemoryAndIdleThreads(int *data, unsigned int dataSize);
 
 int reduceWithSequentialAddressingWithIdleThreads(int *data, unsigned int dataSize);
 

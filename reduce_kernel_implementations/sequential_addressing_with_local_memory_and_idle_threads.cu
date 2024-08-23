@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void sequentialAddressingWithLocalMemoryAndIdleThreads(
+__global__ void sequentialAddressingWithGlobalMemoryAndIdleThreads(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     unsigned int blockSize = blockDim.x;
@@ -26,7 +26,7 @@ __global__ void sequentialAddressingWithLocalMemoryAndIdleThreads(
     if (threadBlockIndex == 0) outputData[blockIndex] = inputData[threadIndex];
 }
 
-int reduceWithSequentialAddressingWithLocalMemoryAndIdleThreads(int *data, unsigned int dataSize) {
-    ReduceImplementationKernel kernel = {sequentialAddressingWithLocalMemoryAndIdleThreads, numberOfBlocksForStandardReduction};
+int reduceWithSequentialAddressingWithGlobalMemoryAndIdleThreads(int *data, unsigned int dataSize) {
+    ReduceImplementationKernel kernel = {sequentialAddressingWithGlobalMemoryAndIdleThreads, numberOfBlocksForStandardReduction};
     return reduceWithKernel(kernel, data, dataSize);
 }
