@@ -25,7 +25,7 @@ int reduceWithInterleavedAddressingWithGlobalMemoryAndDivergentBranching(int *da
 
 int reduceWithInterleavedAddressingWithDivergentBranching(int *data, unsigned int dataSize);
 
-int reduceWithInterleavedAddressingWithGlobalMemoryAndBankConflicts(int *data, unsigned int dataSize);
+int reduceWithInterleavedAddressingWithGlobalMemoryAndGoodBranching(int *data, unsigned int dataSize);
 
 int reduceWithInterleavedAddressingWithBankConflicts(int *data, unsigned int dataSize);
 

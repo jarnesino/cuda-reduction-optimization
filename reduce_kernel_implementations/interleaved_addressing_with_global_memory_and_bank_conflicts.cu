@@ -1,6 +1,6 @@
 #include "reduce_kernels.cuh"
 
-__global__ void interleavedAddressingWithGlobalMemoryAndBankConflicts(
+__global__ void interleavedAddressingWithGlobalMemoryAndGoodBranching(
         int *inputData, int *outputData, unsigned int dataSize
 ) {
     unsigned int blockSize = blockDim.x;
@@ -21,9 +21,9 @@ __global__ void interleavedAddressingWithGlobalMemoryAndBankConflicts(
     if (threadBlockIndex == 0) outputData[blockIndex] = inputData[threadIndex];
 }
 
-int reduceWithInterleavedAddressingWithGlobalMemoryAndBankConflicts(int *data, unsigned int dataSize) {
+int reduceWithInterleavedAddressingWithGlobalMemoryAndGoodBranching(int *data, unsigned int dataSize) {
     ReduceImplementationKernel kernel = {
-            interleavedAddressingWithGlobalMemoryAndBankConflicts, numberOfBlocksForStandardReduction
+            interleavedAddressingWithGlobalMemoryAndGoodBranching, numberOfBlocksForStandardReduction
     };
     return reduceWithKernel(kernel, data, dataSize);
 }
