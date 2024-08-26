@@ -25,7 +25,7 @@ void printImplementationData(
 );
 
 int main() {
-    const unsigned int SAMPLE_SIZE = 5;
+    const unsigned int SAMPLE_SIZE = 50;
 
     // Constructor fills array with zeroes.
     float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};
