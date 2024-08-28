@@ -14,5 +14,6 @@ ReduceImplementation reduceImplementations[NUMBER_OF_IMPLEMENTATIONS] = {
         {11, "Multiple reduce operations per thread iteration",                   reduceWithMultipleReduceOperationsPerThreadIteration},
         {12, "Operations for consecutive memory addressing",                      reduceWithOperationsForConsecutiveMemoryAddressing},
         {13, "Shuffle down",                                                      reduceWithShuffleDown},
-        {14, "CUDA Thrust",                                                       reduceWithThrust}
+        {14, "Shuffle down with loop unrolling",                                  reduceWithShuffleDownWithLoopUnrolling},
+        {15, "CUDA Thrust",                                                       reduceWithThrust}
 };
