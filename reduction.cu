@@ -16,5 +16,7 @@ ReduceImplementation reduceImplementations[NUMBER_OF_IMPLEMENTATIONS] = {
         {13, "Operations for consecutive memory addressing 2",                    reduceWithOperationsForConsecutiveMemoryAddressing2},
         {14, "Shuffle down",                                                      reduceWithShuffleDown},
         {15, "Shuffle down with loop unrolling",                                  reduceWithShuffleDownWithLoopUnrolling},
-        {16, "CUDA Thrust",                                                       reduceWithThrust}
+        {16, "BEST",                                                              BESTReduceWithOperationsForConsecutiveMemoryAddressing2},
+        {17, "BEST2",                                                             BEST2ReduceWithOperationsForConsecutiveMemoryAddressing2},
+        {18, "CUDA Thrust",                                                       reduceWithThrust}
 };
