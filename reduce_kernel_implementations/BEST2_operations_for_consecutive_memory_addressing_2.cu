@@ -44,7 +44,6 @@ __global__ void BEST2OperationsForConsecutiveMemoryAddressing2(
     val += __shfl_down_sync(0xFFFFFFFF, val, 4);
     val += __shfl_down_sync(0xFFFFFFFF, val, 2);
     val += __shfl_down_sync(0xFFFFFFFF, val, 1);
-    __syncthreads();
 
     // Write this block's result.
     if (threadIdx.x == 0) outputData[blockIdx.x] = val;
