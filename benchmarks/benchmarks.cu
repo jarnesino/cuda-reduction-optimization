@@ -5,19 +5,19 @@
 void measureElapsedTimes(
         unsigned int dataSize,
         unsigned int SAMPLE_SIZE,
-        float *elapsedTimesInMilliseconds
+        float *averageElapsedTimesInMilliseconds
 );
 
 void printBenchmarkStats(
         unsigned int logDataSize,
         unsigned int SAMPLE_SIZE,
-        const float *elapsedTimesInMilliseconds
+        const float *averageElapsedTimesInMilliseconds
 );
 
 void printImplementationData(
         unsigned int implementationNumber,
         const std::string &implementationName,
-        float elapsedTimeInMilliseconds,
+        float averageElapsedTimeInMilliseconds,
         float timesFasterVsCPU,
         float percentageOfTimeSavedVsCPU,
         float timesFasterVsBaseGPU,
@@ -28,14 +28,14 @@ int main() {
     const unsigned int SAMPLE_SIZE = 50;
 
     // Constructor fills array with zeroes.
-    float elapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};
+    float averageElapsedTimesInMilliseconds[NUMBER_OF_IMPLEMENTATIONS] = {};
 
     const unsigned int logDataSizes[3] = {10, 20, 30};
     for (unsigned int logDataSize: logDataSizes) {
         const unsigned int dataSize = 1 << logDataSize;
 
-        measureElapsedTimes(dataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
-        printBenchmarkStats(logDataSize, SAMPLE_SIZE, elapsedTimesInMilliseconds);
+        measureElapsedTimes(dataSize, SAMPLE_SIZE, averageElapsedTimesInMilliseconds);
+        printBenchmarkStats(logDataSize, SAMPLE_SIZE, averageElapsedTimesInMilliseconds);
     }
 
     return EXIT_SUCCESS;
@@ -46,7 +46,7 @@ int main() {
 void measureElapsedTimes(
         const unsigned int dataSize,
         const unsigned int SAMPLE_SIZE,
-        float *elapsedTimesInMilliseconds
+        float *averageElapsedTimesInMilliseconds
 ) {
     int *testingData = new int[dataSize];
 
@@ -58,7 +58,7 @@ void measureElapsedTimes(
             TimedReductionResult reductionResultForImplementation = reduceAndMeasureTime(
                     reduceImplementations[index], testingData, dataSize
             );
-            elapsedTimesInMilliseconds[index] += reductionResultForImplementation.elapsedMilliseconds;
+            averageElapsedTimesInMilliseconds[index] += reductionResultForImplementation.elapsedMilliseconds;
 
             printf(
                     "Completed sample %d for implementation %d of %d\n",
@@ -70,13 +70,13 @@ void measureElapsedTimes(
     }
 
     for (int index = 0; index < NUMBER_OF_IMPLEMENTATIONS; index++)
-        elapsedTimesInMilliseconds[index] /= (float) SAMPLE_SIZE;
+        averageElapsedTimesInMilliseconds[index] /= (float) SAMPLE_SIZE;
 }
 
 void printBenchmarkStats(
         const unsigned int logDataSize,
         const unsigned int SAMPLE_SIZE,
-        const float *elapsedTimesInMilliseconds
+        const float *averageElapsedTimesInMilliseconds
 ) {
     printf(
             "****************** LOG DATA SIZE: %d ****************** SAMPLE SIZE: %d ******************\n",
@@ -88,26 +88,26 @@ void printBenchmarkStats(
     float timesFasterVsBaseGPU;
     float percentageOfTimeSavedVsBaseGPU;
 
-    const float elapsedTimeForSequentialCPUImplementation = elapsedTimesInMilliseconds[0];
-    const float elapsedTimeForBaseGPUImplementation = elapsedTimesInMilliseconds[1];
+    const float averageElapsedTimeForSequentialCPUImplementation = averageElapsedTimesInMilliseconds[0];
+    const float averageElapsedTimeForBaseGPUImplementation = averageElapsedTimesInMilliseconds[1];
     for (int index = 0; index < NUMBER_OF_IMPLEMENTATIONS; index++) {
-        timesFasterVsCPU = elapsedTimeForSequentialCPUImplementation / elapsedTimesInMilliseconds[index];
+        timesFasterVsCPU = averageElapsedTimeForSequentialCPUImplementation / averageElapsedTimesInMilliseconds[index];
         percentageOfTimeSavedVsCPU = (
                 100.0f
-                * (elapsedTimeForSequentialCPUImplementation - elapsedTimesInMilliseconds[index])
-                / elapsedTimeForSequentialCPUImplementation
+                * (averageElapsedTimeForSequentialCPUImplementation - averageElapsedTimesInMilliseconds[index])
+                / averageElapsedTimeForSequentialCPUImplementation
         );
-        timesFasterVsBaseGPU = elapsedTimeForBaseGPUImplementation / elapsedTimesInMilliseconds[index];
+        timesFasterVsBaseGPU = averageElapsedTimeForBaseGPUImplementation / averageElapsedTimesInMilliseconds[index];
         percentageOfTimeSavedVsBaseGPU = (
                 100.0f
-                * (elapsedTimeForBaseGPUImplementation - elapsedTimesInMilliseconds[index])
-                / elapsedTimeForBaseGPUImplementation
+                * (averageElapsedTimeForBaseGPUImplementation - averageElapsedTimesInMilliseconds[index])
+                / averageElapsedTimeForBaseGPUImplementation
         );
 
         printImplementationData(
                 reduceImplementations[index].number,
                 reduceImplementations[index].name,
-                elapsedTimesInMilliseconds[index],
+                averageElapsedTimesInMilliseconds[index],
                 timesFasterVsCPU,
                 percentageOfTimeSavedVsCPU,
                 timesFasterVsBaseGPU,
@@ -121,7 +121,7 @@ void printBenchmarkStats(
 void printImplementationData(
         const unsigned int implementationNumber,
         const std::string &implementationName,
-        float elapsedTimeInMilliseconds,
+        float averageElapsedTimeInMilliseconds,
         float timesFasterVsCPU,
         float percentageOfTimeSavedVsCPU,
         float timesFasterVsBaseGPU,
@@ -129,7 +129,7 @@ void printImplementationData(
 ) {
     printf("Implementation: %d - ", implementationNumber);
     std::cout << implementationName << "\n";
-    printf("\t Time: %f ms\n", elapsedTimeInMilliseconds);
+    printf("\t Time: %f ms\n", averageElapsedTimeInMilliseconds);
     printf(
             "\t Against CPU implementation: %f times as fast | %f%% time saved\n",
             timesFasterVsCPU,
